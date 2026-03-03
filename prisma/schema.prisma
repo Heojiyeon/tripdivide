@@ -9,9 +9,54 @@ datasource db {
   provider = "sqlite"
 }
 
+enum TripStatus {
+  OPEN
+  SETTLED
+}
+
 model Trip {
-  id        Int      @id @default(autoincrement())
+  id        String     @id @default(cuid())
   title     String
-  status    String   @default("DRAFT")
+  status    TripStatus @default(OPEN)
+  createdAt DateTime   @default(now())
+
+  participants Participant[]
+  expenses     Expense[]
+}
+
+model Participant {
+  id        String   @id @default(cuid())
+  name      String
   createdAt DateTime @default(now())
+
+  tripId String
+  trip   Trip   @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+  expensesPaid Expense[]      @relation("PaidBy")
+  splits       ExpenseSplit[]
+}
+
+model Expense {
+  id        String   @id @default(cuid())
+  amount    Int
+  createdAt DateTime @default(now())
+
+  tripId String
+  trip   Trip   @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+  paidById String
+  paidBy   Participant @relation("PaidBy", fields: [paidById], references: [id])
+
+  splits ExpenseSplit[]
+}
+
+model ExpenseSplit {
+  expenseId     String
+  participantId String
+  shareAmount   Int
+
+  expense     Expense     @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+  participant Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+  @@id([expenseId, participantId])
 }
