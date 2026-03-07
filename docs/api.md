@@ -3,6 +3,9 @@
 This document defines the REST API contract for the TripDivide travel expense settlement service.
 All endpoints return JSON responses and follow RESTful resource naming conventions.
 
+Trips are scoped to a demoKey for demo usage.
+Once created, trips are accessed via their unique tripId.
+
 ## `GET /demo/:demoKey/trips`
 
 ### Response
@@ -41,7 +44,9 @@ All endpoints return JSON responses and follow RESTful resource naming conventio
 }
 ```
 
-## `GET /trips/:tripId`
+### Response - 201 Created
+
+## `GET /demo/:demoKey/trips/:tripId`
 
 ### Response
 
@@ -88,7 +93,7 @@ All endpoints return JSON responses and follow RESTful resource naming conventio
 }
 ```
 
-## `GET /trips/:tripId/participants`
+## `GET /demo/:demoKey/trips/:tripId/participants`
 
 ### Response
 
@@ -107,7 +112,7 @@ All endpoints return JSON responses and follow RESTful resource naming conventio
 }
 ```
 
-## `POST /trips/:tripId/participants`
+## `POST /demo/:demoKey/trips/:tripId/participants`
 
 ### Request
 
@@ -126,7 +131,13 @@ All endpoints return JSON responses and follow RESTful resource naming conventio
 }
 ```
 
-## `POST /trips/:tripId/expenses`
+### Response - 201 Created
+
+## `POST /demo/:demoKey/trips/:tripId/expenses`
+
+Validation rules
+
+- sum(splits[].shareAmount) must equal amount
 
 ### Request
 
@@ -175,7 +186,9 @@ All endpoints return JSON responses and follow RESTful resource naming conventio
 }
 ```
 
-## `GET /trips/:tripId/expenses`
+### Response - 201 Created
+
+## `GET /demo/:demoKey/trips/:tripId/expenses`
 
 ### Response
 
@@ -208,7 +221,7 @@ All endpoints return JSON responses and follow RESTful resource naming conventio
 }
 ```
 
-## `GET /trips/:tripId/settlement`
+## `GET /demo/:demoKey/trips/:tripId/settlement`
 
 ### Response
 
@@ -235,5 +248,45 @@ All endpoints return JSON responses and follow RESTful resource naming conventio
     }
   ],
   "updatedAt": "2026-03-06T13:00:00Z"
+}
+```
+
+## `PATCH /demo/:demoKey/trips/:tripId`
+
+Used to update trip status (e.g. OPEN -> SETTLED)
+
+### Request
+
+```json
+{
+  "status": "SETTLED"
+}
+```
+
+### Response
+
+```json
+{
+  "id": "sdasd1",
+  "title": "유럽 여행",
+  "status": "SETTLED",
+  "updatedAt": "2026-03-06T14:00:00Z"
+}
+```
+
+## Error Response Format
+
+### Possible Errors
+
+- 400 INVALID_SPLIT_SUM
+- 404 TRIP_NOT_FOUND
+- 409 TRIP_ALREADY_SETTLED
+
+```json
+{
+  "error": {
+    "code": "INVALID_SPLIT_SUM",
+    "message": "Sum of split amounts must equal the total expense amount"
+  }
 }
 ```
