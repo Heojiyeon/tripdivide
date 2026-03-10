@@ -1,0 +1,23 @@
+@baseUrl = http://localhost:3000/api
+@demoKey = 123
+
+@tripId = cmmka33rt0004kbs71bzio0on
+
+### Trip 생성
+POST {{baseUrl}}/demo/{{demoKey}}/trips
+Content-Type: application/json
+
+{
+  "title": "유럽 여행"
+}
+
+### Trip 조회
+GET {{baseUrl}}/demo/{{demoKey}}/trips
+
+### Participant 생성
+POST {{baseUrl}}/demo/{{demoKey}}/trips/{{tripId}}/participants
+Content-Type: application/json
+
+{
+  "name": "루이"
+}
