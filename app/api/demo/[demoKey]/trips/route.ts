@@ -1,4 +1,4 @@
-import { apiError } from "@/app/lib/error";
+import { apiError } from "@/app/lib/api-error";
 import { prisma } from "@/app/lib/prisma";
 import {  ErrorCode } from "@/app/types/api";
 
