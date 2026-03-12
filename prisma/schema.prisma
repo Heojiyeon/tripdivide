@@ -14,12 +14,21 @@ enum TripStatus {
   SETTLED
 }
 
+model DemoSession {
+  demoKey   String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  trips Trip[]
+}
+
 model Trip {
   id        String     @id @default(cuid())
   demoKey String
   title     String
   status    TripStatus @default(OPEN)
   createdAt DateTime   @default(now())
+
+  demoSession DemoSession @relation(fields: [demoKey], references: [demoKey])
 
   participants Participant[]
   expenses     Expense[]
