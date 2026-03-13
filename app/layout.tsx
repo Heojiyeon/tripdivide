@@ -22,7 +22,7 @@ export default function RootLayout({
     <html lang="ko">
       <body className={`${pretendard.className} antialiased`}>
         <header></header>
-        <main className="max-w-5xl mx-auto px-6 py-10">{children}</main>
+        <main className="max-w-5xl min-h-screen mx-auto">{children}</main>
         <footer></footer>
       </body>
     </html>
