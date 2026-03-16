@@ -1,6 +1,8 @@
-import { apiError } from "@/app/lib/api-error";
-import { prisma } from "@/app/lib/prisma";
-import { ErrorCode } from "@/app/types/api";
+import { apiError } from "@/lib/api-error";
+import { prisma } from "@/lib/prisma";
+import { ErrorCode } from "@/types/api";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 /**
  * GET /demo/:demokey/trips (여행 리스트 조회)
@@ -31,16 +33,28 @@ export async function POST(request: Request, { params }: { params: Promise<{ dem
   const { demoKey } = await params;
   if (!demoKey) return apiError(ErrorCode.BAD_REQUEST, 400);
 
-  const { title } = await request.json();
+  const formData = await request.formData();
+  const title = formData.get("title");
 
-  if (!title?.trim()) return apiError(ErrorCode.BAD_REQUEST, 400);
+  if (typeof title !== "string" || !title.trim()) {
+    return Response.json(
+      {
+        error: {
+          code: "BAD_REQUEST",
+          message: "invalid input",
+        },
+      },
+      { status: 400 },
+    );
+  }
 
-  const trip = await prisma.trip.create({
+  await prisma.trip.create({
     data: {
       demoKey,
       title,
     },
   });
 
-  return Response.json({ trip });
+  revalidatePath(`/demo/${demoKey}/trips`);
+  redirect(`/demo/${demoKey}/trips`);
 }

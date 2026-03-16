@@ -1,6 +1,6 @@
-import { apiError } from "@/app/lib/api-error";
-import { prisma } from "@/app/lib/prisma";
-import { ErrorCode } from "@/app/types/api";
+import { apiError } from "@/lib/api-error";
+import { prisma } from "@/lib/prisma";
+import { ErrorCode } from "@/types/api";
 
 /**
  * POST /demo/:demoKey/trips/:tripId/participants (참가자 추가)
