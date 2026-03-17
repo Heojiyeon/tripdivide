@@ -16,7 +16,7 @@ export default async function Trips({ params }: { params: Promise<{ demoKey: str
   const { trips } = await res.json();
 
   return (
-    <div>
+    <div className="flex h-screen justify-center items-center">
       <TripList trips={trips} demoKey={demoKey} />
     </div>
   );
