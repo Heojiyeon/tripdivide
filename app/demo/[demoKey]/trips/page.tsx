@@ -8,11 +8,12 @@ export default async function Trips({ params }: { params: Promise<{ demoKey: str
   const { demoKey } = await params;
 
   if (!demoKey || demoKey === "undefined") {
-    // redirect back or render an error
     return <div>유효하지 않은 demoKey 입니다. 처음 화면으로 돌아가 주세요.</div>;
   }
 
-  const res = await fetch(`${process.env.API_URL}/api/demo/${demoKey}/trips`);
+  const res = await fetch(`${process.env.API_URL}/api/demo/${demoKey}/trips`, {
+    cache: "no-cache",
+  });
   const { trips } = await res.json();
 
   return (

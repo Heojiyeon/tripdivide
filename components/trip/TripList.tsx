@@ -14,12 +14,8 @@ import { useRouter } from "next/navigation";
 export default function TripList({ trips, demoKey }: { trips: TripResponse[]; demoKey: string }) {
   const router = useRouter();
 
-  const handleSelectTrip = async (tripId: string) => {
-    const res = await fetch(`/api/demo/${demoKey}/trips/${tripId}`);
-
-    if (res.ok) {
-      router.push(`/demo/${demoKey}/trips/${tripId}`);
-    }
+  const handleSelectTrip = (tripId: string) => {
+    router.push(`/demo/${demoKey}/trips/${tripId}`);
   };
 
   return (

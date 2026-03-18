@@ -10,7 +10,7 @@ export default function TripCard({
   onClick,
 }: {
   trip: TripResponse;
-  onClick: (tripId: string) => Promise<void>;
+  onClick: (tripId: string) => void;
 }) {
   return (
     <div onClick={() => onClick(trip.id)}>
