@@ -1,4 +1,5 @@
 import TripList from "@/components/trip/TripList";
+import { notFound } from "next/navigation";
 
 /**
  *
@@ -7,13 +8,12 @@ import TripList from "@/components/trip/TripList";
 export default async function Trips({ params }: { params: Promise<{ demoKey: string }> }) {
   const { demoKey } = await params;
 
-  if (!demoKey || demoKey === "undefined") {
-    return <div>유효하지 않은 demoKey 입니다. 처음 화면으로 돌아가 주세요.</div>;
-  }
-
   const res = await fetch(`${process.env.API_URL}/api/demo/${demoKey}/trips`, {
     cache: "no-cache",
   });
+
+  if (!res.ok) return notFound();
+
   const { trips } = await res.json();
 
   return (
