@@ -1,6 +1,8 @@
 import { apiError } from "@/lib/api-error";
 import { prisma } from "@/lib/prisma";
 import { ErrorCode } from "@/types/api";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 /**
  * POST /demo/:demoKey/trips/:tripId/participants (참가자 추가)
@@ -14,15 +16,18 @@ export async function POST(
   const { demoKey, tripId } = await params;
   if (!demoKey || !tripId) return apiError(ErrorCode.BAD_REQUEST, 400);
 
-  const { name } = await request.json();
-  if (!name?.trim()) return apiError(ErrorCode.BAD_REQUEST, 400);
+  const formData = await request.formData();
+  const name = formData.get("name");
 
-  const participant = await prisma.participant.create({
+  if (typeof name !== "string" || !name.trim()) return apiError(ErrorCode.BAD_REQUEST, 400);
+
+  await prisma.participant.create({
     data: {
       tripId,
       name,
     },
   });
 
-  return Response.json({ participant });
+  revalidatePath(`/demo/${demoKey}/trips/${tripId}`);
+  redirect(`/demo/${demoKey}/trips/${tripId}`);
 }

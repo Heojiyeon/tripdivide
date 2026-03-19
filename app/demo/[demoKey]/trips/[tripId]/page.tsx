@@ -1,3 +1,5 @@
+import ParticipantList from "@/components/participant/ParticipantList";
+import { ApiResponse, TripDetailResponse } from "@/types/api";
 import { notFound } from "next/navigation";
 
 /**
@@ -17,13 +19,16 @@ export default async function Page({
 
   if (!res.ok) return notFound();
 
-  const { trip } = await res.json();
+  const { data } = (await res.json()) as ApiResponse<TripDetailResponse>;
+  const { title, status, createdAt, participants, expenses } = data;
 
   return (
-    <div>
-      {trip.title}
-      {trip.OPEN}
-      {trip.createdAt}
+    <div className="h-screen flex flex-col items-center justify-center">
+      {title}
+      {status}
+      {createdAt}
+      <ParticipantList demoKey={demoKey} tripId={tripId} participants={participants} />
+      <div>지출 내역 :</div>
     </div>
   );
 }

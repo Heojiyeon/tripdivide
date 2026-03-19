@@ -1,4 +1,5 @@
 import TripList from "@/components/trip/TripList";
+import { ApiResponse, TripResponse } from "@/types/api";
 import { notFound } from "next/navigation";
 
 /**
@@ -14,7 +15,7 @@ export default async function Trips({ params }: { params: Promise<{ demoKey: str
 
   if (!res.ok) return notFound();
 
-  const { trips } = await res.json();
+  const { data: trips } = (await res.json()) as ApiResponse<TripResponse[]>;
 
   return (
     <div className="flex h-screen justify-center items-center">

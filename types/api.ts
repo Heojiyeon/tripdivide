@@ -1,3 +1,14 @@
+export type ApiResponse<T> = {
+  data: T;
+};
+
+export type ApiErrorResponse = {
+  error: {
+    code: string;
+    message: string;
+  };
+};
+
 export enum ErrorCode {
   BAD_REQUEST = "BAD_REQUEST",
   TRIP_NOT_FOUND = "TRIP_NOT_FOUND",
@@ -14,4 +25,16 @@ export type TripResponse = {
   title: string;
   status: "OPEN" | "SETTLED";
   createdAt: string;
+};
+
+export type TripDetailResponse = {
+  id: string;
+  title: string;
+  status: "OPEN" | "SETTLED";
+  createdAt: string;
+  participants: {
+    id: string;
+    name: string;
+  }[];
+  expenses: any[];
 };

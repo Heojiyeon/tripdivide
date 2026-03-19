@@ -31,5 +31,5 @@ export async function GET(
     return apiError(ErrorCode.TRIP_NOT_FOUND, 404);
   }
 
-  return Response.json({ trip });
+  return Response.json({ data: trip });
 }
