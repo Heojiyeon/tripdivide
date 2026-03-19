@@ -20,7 +20,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ demo
     },
   });
 
-  return Response.json({ trips });
+  return Response.json({ data: trips });
 }
 
 /**
@@ -48,11 +48,22 @@ export async function POST(request: Request, { params }: { params: Promise<{ dem
     );
   }
 
-  await prisma.trip.create({
-    data: {
-      demoKey,
-      title,
-    },
+  await prisma.$transaction(async (tx) => {
+    const createdTrip = await tx.trip.create({
+      data: {
+        demoKey,
+        title,
+      },
+    });
+
+    await tx.participant.create({
+      data: {
+        tripId: createdTrip.id,
+        name: "나 (본인)",
+      },
+    });
+
+    return createdTrip;
   });
 
   revalidatePath(`/demo/${demoKey}/trips`);
