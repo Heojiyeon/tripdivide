@@ -36,5 +36,19 @@ export type TripDetailResponse = {
     id: string;
     name: string;
   }[];
-  expenses: any[];
+  expenses: {
+    id: string;
+    title: string;
+    amount: number;
+    paidBy: {
+      id: string;
+      name: string;
+    };
+    splits: {
+      id: string;
+      name: string;
+      shareAmount: number;
+    }[];
+    createdAt: string;
+  }[];
 };

@@ -1,3 +1,4 @@
+import ExpenseList from "@/components/expense/ExpenseList";
 import ParticipantList from "@/components/participant/ParticipantList";
 import { ApiResponse, TripDetailResponse } from "@/types/api";
 import { notFound } from "next/navigation";
@@ -28,7 +29,7 @@ export default async function Page({
       {status}
       {createdAt}
       <ParticipantList demoKey={demoKey} tripId={tripId} participants={participants} />
-      <div>지출 내역 :</div>
+      <ExpenseList expenses={expenses} participants={participants} />
     </div>
   );
 }
