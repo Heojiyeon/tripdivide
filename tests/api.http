@@ -21,3 +21,22 @@ Content-Type: application/json
 {
   "name": "루이"
 }
+
+### Participant 조회
+GET {{baseUrl}}/demo/{{demoKey}}/trips/{{tripId}}/participants
+
+### Expoense 생성
+POST {{baseUrl}}/demo/{{demoKey}}/trips/{{tripId}}/expenses
+Content-Type: application/json
+
+{
+  "title": "1일차 점심",
+  "amount": 50000,
+  "paidById": "cmmka3cxs0005kbs755s6e9en",
+  "splits": [
+    {
+      "participantId": "cmmka3cxs0005kbs755s6e9en",
+      "shareAmount": 50000
+    }
+  ]
+}
