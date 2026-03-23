@@ -10,7 +10,7 @@ export default async function Trips({ params }: { params: Promise<{ demoKey: str
   const { demoKey } = await params;
 
   const res = await fetch(`${process.env.API_URL}/api/demo/${demoKey}/trips`, {
-    cache: "no-cache",
+    cache: "no-store",
   });
 
   if (!res.ok) return notFound();

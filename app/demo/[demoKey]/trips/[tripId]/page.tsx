@@ -15,7 +15,7 @@ export default async function Page({
   const { demoKey, tripId } = await params;
 
   const res = await fetch(`${process.env.API_URL}/api/demo/${demoKey}/trips/${tripId}`, {
-    cache: "no-cache",
+    cache: "no-store",
   });
 
   if (!res.ok) return notFound();
@@ -29,7 +29,12 @@ export default async function Page({
       {status}
       {createdAt}
       <ParticipantList demoKey={demoKey} tripId={tripId} participants={participants} />
-      <ExpenseList expenses={expenses} participants={participants} />
+      <ExpenseList
+        demoKey={demoKey}
+        tripId={tripId}
+        expenses={expenses}
+        participants={participants}
+      />
     </div>
   );
 }

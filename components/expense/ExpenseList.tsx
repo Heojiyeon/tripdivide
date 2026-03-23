@@ -5,9 +5,13 @@ import ExpenseCard from "./ExpenseCard";
  * @returns 지출 리스트 컴포넌트
  */
 export default function ExpenseList({
+  demoKey,
+  tripId,
   expenses,
   participants,
 }: {
+  demoKey: string;
+  tripId: string;
   expenses: {
     id: string;
     title: string;
@@ -46,7 +50,7 @@ export default function ExpenseList({
           ))
         )}
       </div>
-      <ExpenseCard canEdit={true} participants={participants} />
+      <ExpenseCard demoKey={demoKey} tripId={tripId} canEdit={true} participants={participants} />
     </div>
   );
 }
