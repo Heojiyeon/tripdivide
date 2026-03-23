@@ -1,4 +1,5 @@
 "use client";
+
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { Fragment } from "react/jsx-runtime";
@@ -32,20 +33,23 @@ export default function ExpenseCard({
   const getNameById = (id: string) =>
     participants.find((participant) => participant.id === id)?.name ?? "알 수 없음";
 
-  /** 지출 금액을 균등 분배하는 함수 */
+  /** 지출 금액을 분배하는 함수 */
   const calculateEqualSplits = (currentAmount: number) => {
-    setSplits((prevSplits) => {
-      const n = prevSplits.length;
-      if (n === 0) return prevSplits;
+    // 균등 분배
+    if (splitEqualMode) {
+      setSplits((prevSplits) => {
+        const n = prevSplits.length;
+        if (n === 0) return prevSplits;
 
-      const base = Math.floor(currentAmount / n);
-      const remainder = currentAmount % n;
+        const base = Math.floor(currentAmount / n);
+        const remainder = currentAmount % n;
 
-      return prevSplits.map((split, idx) => ({
-        ...split,
-        shareAmount: idx < remainder ? base + 1 : base,
-      }));
-    });
+        return prevSplits.map((split, idx) => ({
+          ...split,
+          shareAmount: idx < remainder ? base + 1 : base,
+        }));
+      });
+    }
   };
 
   /** 정산 리스트 생성 함수 */
@@ -69,6 +73,26 @@ export default function ExpenseCard({
     }
   };
 
+  /** 지출 수동 분배 핸들링 함수 */
+  const handleManualSplits = (
+    e: ChangeEvent<HTMLInputElement>,
+    split: { participantId: string; shareAmount: number },
+  ) => {
+    setSplits((prevSplits) => {
+      const changed = prevSplits.map((prevSplit) => {
+        if (prevSplit.participantId === split.participantId)
+          return {
+            ...prevSplit,
+            shareAmount: Number(e.target.value),
+          };
+        return { ...prevSplit };
+      });
+
+      return changed;
+    });
+  };
+
+  /** 정산 추가 제출 함수 */
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -147,7 +171,12 @@ export default function ExpenseCard({
             {splits.map((split) => (
               <div key={split.participantId}>
                 <span>{getNameById(split.participantId)}</span>
-                <span>{split.shareAmount}원</span>
+                <input
+                  type="number"
+                  onChange={(e) => handleManualSplits(e, split)}
+                  value={split.shareAmount}
+                  disabled={splitEqualMode}
+                />
               </div>
             ))}
           </div>
