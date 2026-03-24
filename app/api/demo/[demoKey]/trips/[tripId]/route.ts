@@ -23,7 +23,14 @@ export async function GET(
     },
     include: {
       participants: true,
-      expenses: true,
+      expenses: {
+        select: {
+          id: true,
+          title: true,
+          amount: true,
+          createdAt: true,
+        },
+      },
     },
   });
 

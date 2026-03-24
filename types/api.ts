@@ -32,23 +32,38 @@ export type TripDetailResponse = {
   title: string;
   status: "OPEN" | "SETTLED";
   createdAt: string;
-  participants: {
+  participants: Participant[];
+  expenses: Expense[];
+};
+
+export type Participant = {
+  id: string;
+  name: string;
+};
+
+export type Expense = {
+  id: string;
+  title?: string;
+  amount: number;
+  paidBy?: {
     id: string;
     name: string;
-  }[];
-  expenses: {
+  };
+  splits?: {
     id: string;
-    title: string;
-    amount: number;
-    paidBy: {
-      id: string;
-      name: string;
-    };
-    splits: {
-      id: string;
-      name: string;
-      shareAmount: number;
-    }[];
-    createdAt: string;
+    name: string;
+    shareAmount: number;
   }[];
+  createdAt: string;
+};
+
+export type ExpenseDetailResponse = {
+  amount: number;
+  createdAt: string;
+  id: string;
+  paidBy: { id: string; name: string };
+  paidById: string;
+  splits: { participant: { id: string; name: string }; shareAmount: number }[];
+  title: string;
+  tripId: string;
 };
