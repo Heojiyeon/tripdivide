@@ -1,3 +1,5 @@
+import { TripDetailResponse } from "@/types/api";
+
 /**
  *
  * @param demoKey 데모 키
@@ -12,10 +14,7 @@ export default function ParticipantList({
 }: {
   demoKey: string;
   tripId: string;
-  participants: {
-    id: string;
-    name: string;
-  }[];
+  participants: TripDetailResponse["participants"];
 }) {
   return (
     <div className="flex">
