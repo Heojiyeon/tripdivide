@@ -1,7 +1,7 @@
 @baseUrl = http://localhost:3000/api
-@demoKey = 123
+@demoKey = cmmsrgcrj0002els7mqxxzc4b
 
-@tripId = cmmka33rt0004kbs71bzio0on
+@tripId = cmmx6n4tm0009ejs7zu6wotd2
 
 ### Trip 생성
 POST {{baseUrl}}/demo/{{demoKey}}/trips
@@ -40,3 +40,14 @@ Content-Type: application/json
     }
   ]
 }
+
+### status 업데이트
+PATCH {{baseUrl}}/demo/{{demoKey}}/trips/{{tripId}}
+Content-Type: application/json
+
+{
+  "status": "SETTLED"
+}
+
+### settlement 조회
+GET {{baseUrl}}/demo/{{demoKey}}/trips/{{tripId}}/settlement
