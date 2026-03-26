@@ -44,6 +44,10 @@ export async function GET(
 
 /**
  * PATCH /demo/:demoKey/trips/:tripId (여행 상세 정보 업데이트)
+ *
+ * demoKey 파라미터
+ * tripId 파라미터
+ * return Trip 상세 정보
  */
 export async function PATCH(
   request: NextRequest,
@@ -69,6 +73,5 @@ export async function PATCH(
       status,
     },
   });
-
   return NextResponse.json({ data: res }, { status: 200 });
 }

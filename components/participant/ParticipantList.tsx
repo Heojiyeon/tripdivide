@@ -1,4 +1,5 @@
 import { TripDetailResponse } from "@/types/api";
+import { useMemo } from "react";
 
 /**
  *
@@ -11,11 +12,15 @@ export default function ParticipantList({
   demoKey,
   tripId,
   participants,
+  status,
 }: {
   demoKey: string;
   tripId: string;
   participants: TripDetailResponse["participants"];
+  status: TripDetailResponse["status"];
 }) {
+  const canAddParticipant = useMemo(() => (status === "OPEN" ? true : false), [status]);
+
   return (
     <div className="flex">
       여행 참여 인원 |&nbsp;
@@ -24,10 +29,12 @@ export default function ParticipantList({
           {participant.name}&nbsp;
         </div>
       ))}
-      <form action={`/api/demo/${demoKey}/trips/${tripId}/participants`} method="post">
-        <input type="text" name="name" id="participant-name" placeholder="참여자 추가" required />
-        <button type="submit">+</button>
-      </form>
+      {canAddParticipant && (
+        <form action={`/api/demo/${demoKey}/trips/${tripId}/participants`} method="post">
+          <input type="text" name="name" id="participant-name" placeholder="참여자 추가" required />
+          <button type="submit">+</button>
+        </form>
+      )}
     </div>
   );
 }

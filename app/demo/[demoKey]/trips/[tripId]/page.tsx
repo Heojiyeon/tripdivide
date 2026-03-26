@@ -1,7 +1,9 @@
 import ExpenseList from "@/components/expense/ExpenseList";
 import ParticipantList from "@/components/participant/ParticipantList";
+import TripStatusButton from "@/components/trip/TripStatusButton";
 import { ApiResponse, TripDetailResponse } from "@/types/api";
 import { notFound } from "next/navigation";
+import { useMemo } from "react";
 
 /**
  *
@@ -21,19 +23,28 @@ export default async function Page({
   if (!res.ok) return notFound();
 
   const { data } = (await res.json()) as ApiResponse<TripDetailResponse>;
-  const { title, status, createdAt, participants, expenses } = data;
+  const { title, status, participants, expenses } = data;
 
   return (
     <div className="h-screen flex flex-col items-center justify-center">
-      {title}
-      {status}
-      {createdAt}
-      <ParticipantList demoKey={demoKey} tripId={tripId} participants={participants} />
+      <div className="w-full flex justify-around">
+        <span>
+          {status} | {title}
+        </span>
+        <TripStatusButton demoKey={demoKey} tripId={tripId} status={status} />
+      </div>
+      <ParticipantList
+        demoKey={demoKey}
+        tripId={tripId}
+        participants={participants}
+        status={status}
+      />
       <ExpenseList
         demoKey={demoKey}
         tripId={tripId}
         expenses={expenses}
         participants={participants}
+        status={status}
       />
     </div>
   );

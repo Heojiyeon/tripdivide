@@ -19,15 +19,18 @@ export default function ExpenseList({
   tripId,
   expenses,
   participants,
+  status,
 }: {
   demoKey: string;
   tripId: string;
   expenses: TripDetailResponse["expenses"];
   participants: TripDetailResponse["participants"];
+  status: TripDetailResponse["status"];
 }) {
   const [canEdit, setCanEdit] = useState(true);
   const [selectedExpense, setSelectedExpense] = useState<ExpenseDetailResponse | null>(null);
 
+  const canAddExpense = useMemo<boolean>(() => (status === "OPEN" ? true : false), [status]);
   const grouppingExpenses = useMemo(() => {
     const map = new Map<string, TripDetailResponse["expenses"]>();
 
@@ -47,7 +50,9 @@ export default function ExpenseList({
     }));
   }, [expenses]);
 
-  const handleClickAddExpense = () => setCanEdit(true);
+  const handleClickAddExpense = () => {
+    setCanEdit(true);
+  };
 
   const handleClickExpense = async (id: string) => {
     setCanEdit(false);
@@ -69,9 +74,11 @@ export default function ExpenseList({
       <div>
         <p className="flex justify-between">
           지출 내역 |&nbsp;
-          <button className="text-gray-400" onClick={handleClickAddExpense}>
-            지출 내역 추가하기 +
-          </button>
+          {canAddExpense && (
+            <button className="text-gray-400" onClick={handleClickAddExpense}>
+              지출 내역 추가하기 +
+            </button>
+          )}
         </p>
         {expenses.length === 0 ? (
           <div>지출 내역이 존재하지 않습니다.</div>
@@ -90,9 +97,9 @@ export default function ExpenseList({
         )}
       </div>
       <div className="border border-orange-500 flex flex-col items-center w-xl">
-        <p className="font-bold text-l">{canEdit ? "지출 추가" : "지출 정보"}</p>
+        <p className="font-bold text-l">{canEdit && canAddExpense ? "지출 추가" : "지출 정보"}</p>
         <div className="flex-1 p-4">
-          {canEdit ? (
+          {canEdit && canAddExpense ? (
             <ExpenseForm demoKey={demoKey} tripId={tripId} participants={participants} />
           ) : (
             <ExpenseCheck selectedExpense={selectedExpense!} />
