@@ -68,3 +68,19 @@ export type ExpenseDetailResponse = {
   title: string;
   tripId: string;
 };
+
+export type SettlementResponse = {
+  id: string;
+  title: string;
+  totalAmount: number;
+  participants: {
+    tripId: string;
+    name: string;
+    id: string;
+  }[];
+  transactions: {
+    from: string;
+    to: string;
+    amount: number;
+  }[];
+};

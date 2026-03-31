@@ -1,9 +1,9 @@
 import ExpenseList from "@/components/expense/ExpenseList";
 import ParticipantList from "@/components/participant/ParticipantList";
+import TripSettlementButton from "@/components/trip/TripSettlementButton";
 import TripStatusButton from "@/components/trip/TripStatusButton";
 import { ApiResponse, TripDetailResponse } from "@/types/api";
 import { notFound } from "next/navigation";
-import { useMemo } from "react";
 
 /**
  *
@@ -31,7 +31,10 @@ export default async function Page({
         <span>
           {status} | {title}
         </span>
-        <TripStatusButton demoKey={demoKey} tripId={tripId} status={status} />
+        <span>
+          <TripStatusButton demoKey={demoKey} tripId={tripId} status={status} />
+          <TripSettlementButton demoKey={demoKey} tripId={tripId} status={status} />
+        </span>
       </div>
       <ParticipantList
         demoKey={demoKey}
