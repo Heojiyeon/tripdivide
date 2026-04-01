@@ -2,7 +2,6 @@ import { apiError } from "@/lib/api-error";
 import { prisma } from "@/lib/prisma";
 import { ErrorCode } from "@/types/api";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 
 /**
  * GET /demo/:demoKey/trips/:tripId/participants (참가자 조회)
@@ -25,7 +24,7 @@ export async function GET(
     },
   });
 
-  return Response.json({ data: participants });
+  return Response.json({ data: participants }, { status: 200 });
 }
 
 /**
@@ -40,12 +39,11 @@ export async function POST(
   const { demoKey, tripId } = await params;
   if (!demoKey || !tripId) return apiError(ErrorCode.BAD_REQUEST, 400);
 
-  const formData = await request.formData();
-  const name = formData.get("name");
+  const { name } = await request.json();
 
   if (typeof name !== "string" || !name.trim()) return apiError(ErrorCode.BAD_REQUEST, 400);
 
-  await prisma.participant.create({
+  const res = await prisma.participant.create({
     data: {
       tripId,
       name,
@@ -53,5 +51,5 @@ export async function POST(
   });
 
   revalidatePath(`/demo/${demoKey}/trips/${tripId}`);
-  redirect(`/demo/${demoKey}/trips/${tripId}`);
+  return Response.json({ data: res }, { status: 201 });
 }

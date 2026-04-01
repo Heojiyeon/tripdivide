@@ -1,5 +1,8 @@
+"use client";
+
 import { TripDetailResponse } from "@/types/api";
-import { useMemo } from "react";
+import { useRouter } from "next/navigation";
+import { useMemo, useRef } from "react";
 
 /**
  *
@@ -19,7 +22,25 @@ export default function ParticipantList({
   participants: TripDetailResponse["participants"];
   status: TripDetailResponse["status"];
 }) {
+  const formRef = useRef<HTMLFormElement>(null);
+  const router = useRouter();
+
   const canAddParticipant = useMemo(() => (status === "OPEN" ? true : false), [status]);
+
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+
+    await fetch(`/api/demo/${demoKey}/trips/${tripId}/participants`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: formData.get("name") }),
+    });
+
+    formRef.current?.reset();
+    router.refresh();
+  };
 
   return (
     <div className="flex">
@@ -30,7 +51,7 @@ export default function ParticipantList({
         </div>
       ))}
       {canAddParticipant && (
-        <form action={`/api/demo/${demoKey}/trips/${tripId}/participants`} method="post">
+        <form ref={formRef} onSubmit={handleSubmit}>
           <input type="text" name="name" id="participant-name" placeholder="참여자 추가" required />
           <button type="submit">+</button>
         </form>

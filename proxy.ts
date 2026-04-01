@@ -5,7 +5,9 @@ import { NextRequest, NextResponse } from "next/server";
  * @returns Proxy
  */
 export async function proxy(request: NextRequest) {
-  const [, , demoKey, , tripId] = request.nextUrl.pathname.split("/");
+  const segments = request.nextUrl.pathname.split("/");
+  const demoKey = segments[2];
+  const tripId = segments[4];
 
   if (!demoKey || demoKey === "undefined") {
     return NextResponse.redirect(new URL("/", request.url));
@@ -19,5 +21,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/demo/:demoKey", "/demo/:demoKey/trips/:tripId"],
+  matcher: ["/demo/:demoKey/trips", "/demo/:demoKey/trips/:tripId"],
 };

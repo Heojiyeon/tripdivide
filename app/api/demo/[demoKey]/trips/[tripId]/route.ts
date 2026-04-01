@@ -39,7 +39,7 @@ export async function GET(
     return apiError(ErrorCode.TRIP_NOT_FOUND, 404);
   }
 
-  return Response.json({ data: trip });
+  return Response.json({ data: trip }, { status: 200 });
 }
 
 /**
@@ -73,5 +73,6 @@ export async function PATCH(
       status,
     },
   });
+
   return NextResponse.json({ data: res }, { status: 200 });
 }

@@ -2,7 +2,6 @@ import { apiError } from "@/lib/api-error";
 import { prisma } from "@/lib/prisma";
 import { ErrorCode } from "@/types/api";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 
 /**
  * GET /demo/:demokey/trips (여행 리스트 조회)
@@ -20,7 +19,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ demo
     },
   });
 
-  return Response.json({ data: trips });
+  return Response.json({ data: trips }, { status: 200 });
 }
 
 /**
@@ -33,22 +32,11 @@ export async function POST(request: Request, { params }: { params: Promise<{ dem
   const { demoKey } = await params;
   if (!demoKey) return apiError(ErrorCode.BAD_REQUEST, 400);
 
-  const formData = await request.formData();
-  const title = formData.get("title");
+  const { title } = await request.json();
 
-  if (typeof title !== "string" || !title.trim()) {
-    return Response.json(
-      {
-        error: {
-          code: "BAD_REQUEST",
-          message: "invalid input",
-        },
-      },
-      { status: 400 },
-    );
-  }
+  if (typeof title !== "string" || !title.trim()) return apiError(ErrorCode.BAD_REQUEST, 400);
 
-  await prisma.$transaction(async (tx) => {
+  const res = await prisma.$transaction(async (tx) => {
     const createdTrip = await tx.trip.create({
       data: {
         demoKey,
@@ -59,7 +47,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ dem
     await tx.participant.create({
       data: {
         tripId: createdTrip.id,
-        name: "나 (본인)",
+        name: "나(본인)",
       },
     });
 
@@ -67,5 +55,6 @@ export async function POST(request: Request, { params }: { params: Promise<{ dem
   });
 
   revalidatePath(`/demo/${demoKey}/trips`);
-  redirect(`/demo/${demoKey}/trips`);
+
+  return Response.json({ data: res }, { status: 201 });
 }

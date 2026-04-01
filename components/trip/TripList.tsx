@@ -19,9 +19,9 @@ export default function TripList({ trips, demoKey }: { trips: TripResponse[]; de
   };
 
   return (
-    <div>
+    <div className="h-screen">
       <TripAddCard demoKey={demoKey} />
-      <div>
+      <div className="overflow-auto">
         {trips.map((trip: TripResponse) => (
           <TripCard key={trip.id} trip={trip} onClick={handleSelectTrip} />
         ))}

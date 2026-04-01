@@ -29,7 +29,6 @@ export default function Home() {
 
     const data = await response.json();
     const demoKey = data.demoKey;
-    console.log("demoKey:", demoKey);
 
     window.localStorage.setItem("demoKey", demoKey);
     return router.push(`/demo/${demoKey}/trips`);
