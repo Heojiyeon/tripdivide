@@ -44,7 +44,7 @@ export async function GET(
   });
 
   if (!expense) {
-    return apiError(ErrorCode.TRIP_NOT_FOUND, 404);
+    return apiError(ErrorCode.EXPENSE_NOT_FOUND, 404);
   }
 
   return Response.json({ data: expense }, { status: 200 });

@@ -39,7 +39,7 @@ export async function GET(
     },
   });
 
-  if (!res) return apiError(ErrorCode.SETTLEMENT_NOT_FOUND, 400);
+  if (!res) return apiError(ErrorCode.SETTLEMENT_NOT_FOUND, 404);
 
   /** 총 사용 금액 , 최소 송금 관계 계산 로직 필요
    *

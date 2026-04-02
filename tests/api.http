@@ -1,7 +1,9 @@
 @baseUrl = http://localhost:3000/api
 @demoKey = cmmsrgcrj0002els7mqxxzc4b
 
-@tripId = cmmx6n4tm0009ejs7zu6wotd2
+@tripId = cmn4dgdn0000fpqs7v8viu513
+
+@expenseId = cmn4dhwyz000jpqs7ghuxi44c
 
 ### Trip 생성
 POST {{baseUrl}}/demo/{{demoKey}}/trips
@@ -25,7 +27,7 @@ Content-Type: application/json
 ### Participant 조회
 GET {{baseUrl}}/demo/{{demoKey}}/trips/{{tripId}}/participants
 
-### Expoense 생성
+### Expense 생성
 POST {{baseUrl}}/demo/{{demoKey}}/trips/{{tripId}}/expenses
 Content-Type: application/json
 
@@ -41,6 +43,10 @@ Content-Type: application/json
   ]
 }
 
+### Expense 조회
+GET {{baseUrl}}/demo/{{demoKey}}/trips/{{tripId}}/expenses/{{expenseId}}
+
+
 ### status 업데이트
 PATCH {{baseUrl}}/demo/{{demoKey}}/trips/{{tripId}}
 Content-Type: application/json
@@ -51,3 +57,4 @@ Content-Type: application/json
 
 ### settlement 조회
 GET {{baseUrl}}/demo/{{demoKey}}/trips/{{tripId}}/settlement
+
