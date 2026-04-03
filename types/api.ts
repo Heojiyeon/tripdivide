@@ -87,3 +87,14 @@ export type SettlementResponse = {
     amount: number;
   }[];
 };
+
+export type SettlementSplit = {
+  participantId: string;
+  shareAmount: number;
+};
+
+export type SettlementExpense = {
+  amount: number;
+  paidById: string;
+  splits: SettlementSplit[];
+};
