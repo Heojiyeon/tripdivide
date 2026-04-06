@@ -1,6 +1,7 @@
 import { apiError } from "@/lib/api-error";
 import { prisma } from "@/lib/prisma";
 import { ErrorCode } from "@/types/api";
+import { Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
 /**
@@ -19,7 +20,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ demo
     },
   });
 
-  return Response.json({ data: trips }, { status: 200 });
+  return Response.json({ trips }, { status: 200 });
 }
 
 /**
@@ -36,7 +37,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ dem
 
   if (typeof title !== "string" || !title.trim()) return apiError(ErrorCode.BAD_REQUEST, 400);
 
-  const res = await prisma.$transaction(async (tx) => {
+  const res = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     const createdTrip = await tx.trip.create({
       data: {
         demoKey,
