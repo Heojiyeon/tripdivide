@@ -10,10 +10,5 @@ export async function POST() {
     data: {},
   });
 
-  return Response.json(
-    {
-      data: { demoKey: session.demoKey },
-    },
-    { status: 201 },
-  );
+  return Response.json({ demoKey: session.demoKey }, { status: 201 });
 }
