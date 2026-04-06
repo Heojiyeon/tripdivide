@@ -1,5 +1,4 @@
 import TripList from "@/components/trip/TripList";
-import { ApiResponse, TripResponse } from "@/types/api";
 import { notFound } from "next/navigation";
 
 /**
@@ -12,10 +11,12 @@ export default async function Trips({ params }: { params: Promise<{ demoKey: str
   const res = await fetch(`${process.env.API_URL}/api/demo/${demoKey}/trips`, {
     cache: "no-store",
   });
-
   if (!res.ok) return notFound();
 
-  const { data: trips } = (await res.json()) as ApiResponse<TripResponse[]>;
+  const json = await res.json();
+  console.log("API response:", JSON.stringify(json));
+
+  const trips = json?.data ?? [];
 
   return (
     <div className="flex h-screen justify-center items-center">

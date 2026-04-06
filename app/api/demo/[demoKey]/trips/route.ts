@@ -20,7 +20,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ demo
     },
   });
 
-  return Response.json({ trips }, { status: 200 });
+  return Response.json({ data: trips }, { status: 200 });
 }
 
 /**
