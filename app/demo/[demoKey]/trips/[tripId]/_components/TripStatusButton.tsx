@@ -35,8 +35,16 @@ export default function TripStatusButton({
   };
 
   return (
-    <button className="p-1 text-blue-500 border border-blue-300" onClick={handleClickButton}>
-      {isOpen ? "정산 확정" : "정산 변경"}
+    <button
+      type="button"
+      className={`h-10 rounded-xl px-4 text-sm font-semibold transition ${
+        isOpen
+          ? "bg-green-100 text-green-700 hover:bg-green-200"
+          : "bg-blue-100 text-blue-700 hover:bg-blue-200"
+      }`}
+      onClick={handleClickButton}
+    >
+      {isOpen ? "정산 확정" : "정산 수정"}
     </button>
   );
 }

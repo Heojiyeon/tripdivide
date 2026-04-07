@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import TripList from "./_components/TripList";
+import TripAddCard from "./_components/TripAddCard";
 
 /**
  *
@@ -14,13 +15,17 @@ export default async function Trips({ params }: { params: Promise<{ demoKey: str
   if (!res.ok) return notFound();
 
   const json = await res.json();
-  console.log("API response:", JSON.stringify(json));
 
   const trips = json?.data ?? [];
 
   return (
-    <div className="flex h-screen justify-center items-center">
+    <>
+      <div>
+        <p className="font-semibold text-3xl">내 여행</p>
+        <p className="text-gray-500">여행을 추가하고 지출을 관리하세요.</p>
+      </div>
+      <TripAddCard demoKey={demoKey} />
       <TripList trips={trips} demoKey={demoKey} />
-    </div>
+    </>
   );
 }

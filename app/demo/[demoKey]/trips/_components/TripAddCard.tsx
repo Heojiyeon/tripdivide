@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { useRef } from "react";
 
@@ -27,10 +28,19 @@ export default function TripAddCard({ demoKey }: { demoKey: string }) {
   };
 
   return (
-    <div className="border border-dashed rounded p-6 flex flex-col gap-2 w-fit">
-      <form ref={formRef} onSubmit={handleSubmit}>
-        <input type="text" name="title" placeholder="여행 제목" required />
-        <button type="submit">ADD TRIP</button>
+    <div className="overflow-hidden border-4 border-blue-300 border-dashed rounded-2xl p-6 flex gap-3 bg-blue-50">
+      <form ref={formRef} onSubmit={handleSubmit} className="flex w-full gap-3">
+        <input
+          type="text"
+          name="title"
+          placeholder="새 여행 이름을 입력하세요"
+          required
+          className="flex-1 bg-white py-3 h-11 px-5 rounded-lg"
+        />
+
+        <Button size="xl" bgColor="blue.400" color="white" rounded="lg" type="submit">
+          + 여행 추가
+        </Button>
       </form>
     </div>
   );

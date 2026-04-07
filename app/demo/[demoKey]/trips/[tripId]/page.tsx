@@ -1,8 +1,10 @@
 import ParticipantList from "@/app/demo/[demoKey]/trips/[tripId]/_components/ParticipantList";
 import TripSettlementButton from "@/app/demo/[demoKey]/trips/[tripId]/_components/TripSettlementButton";
 import TripStatusButton from "@/app/demo/[demoKey]/trips/[tripId]/_components/TripStatusButton";
+import { formatDate } from "@/lib/format";
 import { ApiResponse, TripDetailResponse } from "@/types/api";
 import { notFound } from "next/navigation";
+import TripStatusTag from "../_components/TripStatusTag";
 import ExpenseList from "./_components/ExpenseList";
 
 /**
@@ -23,18 +25,23 @@ export default async function Page({
   if (!res.ok) return notFound();
 
   const { data } = (await res.json()) as ApiResponse<TripDetailResponse>;
-  const { title, status, participants, expenses } = data;
+  const { title, status, createdAt, participants, expenses } = data;
 
   return (
-    <div className="h-screen flex flex-col items-center justify-center">
-      <div className="w-full flex justify-around">
-        <span>
-          {status} | {title}
-        </span>
-        <span>
+    <div className="min-h-screen flex flex-col gap-8">
+      <div className="w-full flex justify-between">
+        <div className="flex flex-col items-start">
+          <div className="flex items-center gap-2">
+            <span className="text-2xl font-semibold">{title}</span>
+            <TripStatusTag status={status} />
+          </div>
+          <span className="text-gray-400">{formatDate(createdAt, true)}</span>
+        </div>
+
+        <div className="flex items-center gap-2">
           <TripStatusButton demoKey={demoKey} tripId={tripId} status={status} />
           <TripSettlementButton demoKey={demoKey} tripId={tripId} status={status} />
-        </span>
+        </div>
       </div>
       <ParticipantList
         demoKey={demoKey}

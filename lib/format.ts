@@ -1,5 +1,13 @@
-export function formatDate(dateStr: string) {
+export function formatDate(dateStr: string, isSimple?: boolean) {
   const date = new Date(dateStr);
+
+  if (isSimple) {
+    return date.toLocaleString("ko-KR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+  }
 
   return date.toLocaleString("ko-KR", {
     year: "numeric",
