@@ -1,9 +1,9 @@
-import ExpenseList from "@/components/expense/ExpenseList";
-import ParticipantList from "@/components/participant/ParticipantList";
-import TripSettlementButton from "@/components/trip/TripSettlementButton";
-import TripStatusButton from "@/components/trip/TripStatusButton";
+import ParticipantList from "@/app/demo/[demoKey]/trips/[tripId]/_components/ParticipantList";
+import TripSettlementButton from "@/app/demo/[demoKey]/trips/[tripId]/_components/TripSettlementButton";
+import TripStatusButton from "@/app/demo/[demoKey]/trips/[tripId]/_components/TripStatusButton";
 import { ApiResponse, TripDetailResponse } from "@/types/api";
 import { notFound } from "next/navigation";
+import ExpenseList from "./_components/ExpenseList";
 
 /**
  *

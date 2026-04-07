@@ -37,7 +37,7 @@ export default function Home() {
   return (
     <div className="border border-amber-200 flex justify-center items-center h-screen">
       <button onClick={handleClickDemo시작} className="border border-orange-300 p-2 rounded-2xl">
-        DEMO 시작하기
+        데모 시작하기 ➡️
       </button>
     </div>
   );

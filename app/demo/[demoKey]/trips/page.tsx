@@ -1,5 +1,5 @@
-import TripList from "@/components/trip/TripList";
 import { notFound } from "next/navigation";
+import TripList from "./_components/TripList";
 
 /**
  *

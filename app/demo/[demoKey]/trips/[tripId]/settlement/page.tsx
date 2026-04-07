@@ -1,4 +1,4 @@
-import Modal from "@/components/common/Modal";
+import Modal from "@/components/ui/Modal";
 import { formatAmount } from "@/lib/format";
 import { ApiResponse, SettlementResponse } from "@/types/api";
 
