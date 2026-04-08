@@ -68,14 +68,15 @@ export default function ExpenseForm({
 
   /** 정산 리스트 생성 함수 */
   const handleSplits = (e: ChangeEvent<HTMLInputElement>) => {
-    const { value: id } = e.target;
-    const isAlreadySplits = splits.some((value) => value.participantId === id);
+    const { value: id, checked } = e.target;
 
-    if (isAlreadySplits) {
-      setSplits((prevSplits) => prevSplits.filter((split) => split.participantId !== id));
-    } else {
-      setSplits((prevSplits) => [...prevSplits, { participantId: id, shareAmount: amount }]);
-    }
+    setSplits((prevSplits) => {
+      if (checked) {
+        return [...prevSplits, { participantId: id, shareAmount: amount }];
+      }
+
+      return prevSplits.filter((split) => split.participantId !== id);
+    });
   };
 
   /** 균등 분배 체크 여부에 따른 함수 */
@@ -104,7 +105,10 @@ export default function ExpenseForm({
     if (res.status === 201) {
       formRef.current?.reset();
 
+      setAmount(0);
+      setSplitEqualMode(true);
       setSplits([]);
+
       router.refresh();
     }
   };
@@ -152,6 +156,7 @@ export default function ExpenseForm({
                 name="expense-participants"
                 value={participant.id}
                 onChange={handleSplits}
+                checked={splits.some((split) => split.participantId === participant.id)}
               />
               {participant.name}
             </label>
