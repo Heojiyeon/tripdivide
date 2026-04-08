@@ -2,7 +2,7 @@
 
 import { Button } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 /**
  *
@@ -13,8 +13,11 @@ export default function TripAddCard({ demoKey }: { demoKey: string }) {
   const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
 
+  const [loading, setLoading] = useState(false);
+
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
 
     const formData = new FormData(e.currentTarget);
 
@@ -23,8 +26,11 @@ export default function TripAddCard({ demoKey }: { demoKey: string }) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ title: formData.get("title") }),
     });
+
     formRef.current?.reset();
     router.refresh();
+
+    setLoading(false);
   };
 
   return (
@@ -44,6 +50,9 @@ export default function TripAddCard({ demoKey }: { demoKey: string }) {
           color="white"
           rounded="lg"
           type="submit"
+          loading={loading}
+          loadingText="Loading"
+          spinnerPlacement="start"
         >
           + 여행 추가
         </Button>

@@ -21,3 +21,10 @@ export function formatDate(dateStr: string, isSimple?: boolean) {
 export function formatAmount(amount: number) {
   return new Intl.NumberFormat("ko-KR").format(amount);
 }
+
+export async function ensureMinDelay(startTime: number, min = 400) {
+  const elapsed = Date.now() - startTime;
+  if (elapsed < min) {
+    await new Promise((res) => setTimeout(res, min - elapsed));
+  }
+}

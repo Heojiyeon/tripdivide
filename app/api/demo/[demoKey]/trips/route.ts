@@ -18,6 +18,9 @@ export async function GET(request: Request, { params }: { params: Promise<{ demo
     where: {
       demoKey: demoKey,
     },
+    orderBy: {
+      createdAt: "desc",
+    },
   });
 
   return Response.json({ data: trips }, { status: 200 });

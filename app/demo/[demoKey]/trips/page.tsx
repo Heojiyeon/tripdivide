@@ -1,6 +1,7 @@
-import { notFound } from "next/navigation";
-import TripList from "./_components/TripList";
+import { Skeleton, Stack } from "@chakra-ui/react";
+import { Suspense } from "react";
 import TripAddCard from "./_components/TripAddCard";
+import TripList from "./_components/TripList";
 
 /**
  *
@@ -9,15 +10,6 @@ import TripAddCard from "./_components/TripAddCard";
 export default async function Trips({ params }: { params: Promise<{ demoKey: string }> }) {
   const { demoKey } = await params;
 
-  const res = await fetch(`${process.env.API_URL}/api/demo/${demoKey}/trips`, {
-    cache: "no-store",
-  });
-  if (!res.ok) return notFound();
-
-  const json = await res.json();
-
-  const trips = json?.data ?? [];
-
   return (
     <>
       <div>
@@ -25,7 +17,19 @@ export default async function Trips({ params }: { params: Promise<{ demoKey: str
         <p className="text-gray-500">여행을 추가하고 지출을 관리하세요.</p>
       </div>
       <TripAddCard demoKey={demoKey} />
-      <TripList trips={trips} demoKey={demoKey} />
+      <Suspense
+        fallback={
+          <div>
+            <Stack flex="1">
+              <Skeleton height="100px" variant="shine" />
+              <Skeleton height="100px" variant="shine" />
+              <Skeleton height="100px" variant="shine" />
+            </Stack>
+          </div>
+        }
+      >
+        <TripList demoKey={demoKey} />
+      </Suspense>
     </>
   );
 }

@@ -3,6 +3,7 @@ import { Icon, VStack } from "@chakra-ui/react";
 import { HiOutlineMap } from "react-icons/hi";
 import TripCard from "./TripCard";
 import ShadowBox from "./ShadowBox";
+import { notFound } from "next/navigation";
 
 /**
  *
@@ -10,7 +11,15 @@ import ShadowBox from "./ShadowBox";
  * @param demoKey 데모 키
  * @returns 여행 리스트 컴포넌트
  */
-export default function TripList({ trips, demoKey }: { trips: TripResponse[]; demoKey: string }) {
+export default async function TripList({ demoKey }: { demoKey: string }) {
+  const res = await fetch(`${process.env.API_URL}/api/demo/${demoKey}/trips`, {
+    cache: "no-store",
+  });
+  if (!res.ok) return notFound();
+
+  const json = await res.json();
+  const trips = json?.data ?? [];
+
   return (
     <>
       {trips.length === 0 ? (
@@ -25,7 +34,7 @@ export default function TripList({ trips, demoKey }: { trips: TripResponse[]; de
         </ShadowBox>
       ) : (
         <div className="flex max-h-[600px] flex-col gap-2 overflow-auto">
-          {trips.map((trip) => (
+          {trips.map((trip: TripResponse) => (
             <TripCard key={trip.id} trip={trip} demoKey={demoKey} />
           ))}
         </div>

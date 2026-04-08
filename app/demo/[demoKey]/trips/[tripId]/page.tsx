@@ -6,6 +6,8 @@ import { ApiResponse, TripDetailResponse } from "@/types/api";
 import { notFound } from "next/navigation";
 import TripStatusTag from "../_components/TripStatusTag";
 import ExpenseList from "./_components/ExpenseList";
+import { Suspense } from "react";
+import TripSkeleton from "./_components/TripSkeleton";
 
 /**
  *
@@ -18,6 +20,14 @@ export default async function Page({
 }) {
   const { demoKey, tripId } = await params;
 
+  return (
+    <Suspense fallback={<TripSkeleton />}>
+      <TripDetails demoKey={demoKey} tripId={tripId} />
+    </Suspense>
+  );
+}
+
+const TripDetails = async ({ demoKey, tripId }: { demoKey: string; tripId: string }) => {
   const res = await fetch(`${process.env.API_URL}/api/demo/${demoKey}/trips/${tripId}`, {
     cache: "no-store",
   });
@@ -58,4 +68,4 @@ export default async function Page({
       />
     </div>
   );
-}
+};

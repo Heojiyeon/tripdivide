@@ -1,7 +1,9 @@
 "use client";
 
+import { ensureMinDelay } from "@/lib/format";
 import { Badge, Button, Card, Icon, VStack } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { HiCalculator, HiLightBulb, HiOutlinePaperAirplane, HiUsers } from "react-icons/hi";
 
 /**
@@ -9,11 +11,17 @@ import { HiCalculator, HiLightBulb, HiOutlinePaperAirplane, HiUsers } from "reac
  */
 export default function Home() {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   const handleClickDemo시작 = async () => {
+    setLoading(true);
+
+    const start = Date.now();
+
     // (1) localStorage 값 확인
     const existedDemoKey = window.localStorage.getItem("demoKey");
     if (existedDemoKey) {
+      await ensureMinDelay(start);
       return router.push(`/demo/${existedDemoKey}/trips`);
     }
 
@@ -32,6 +40,8 @@ export default function Home() {
     const demoKey = data.demoKey;
 
     window.localStorage.setItem("demoKey", demoKey);
+
+    await ensureMinDelay(start);
     return router.push(`/demo/${demoKey}/trips`);
   };
 
@@ -56,12 +66,14 @@ export default function Home() {
             rounded="2xl"
             backgroundColor="blue.500"
             color="white"
+            loading={loading}
+            loadingText="Loading"
+            spinnerPlacement="start"
           >
             데모 시작하기 ➡️
           </Button>
         </VStack>
       </section>
-
       <section className="border-t border-gray-300 bg-card px-4 py-20">
         <div className="mx-auto max-w-5xl">
           <div className="mb-12 text-center text-2xl font-bold text-foreground md:text-3xl">
