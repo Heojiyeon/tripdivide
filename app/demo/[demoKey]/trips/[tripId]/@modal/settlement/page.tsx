@@ -1,6 +1,7 @@
 import Modal from "@/components/ui/Modal";
 import { formatAmount } from "@/lib/format";
 import { ApiResponse, SettlementResponse } from "@/types/api";
+import TripSettlementShareButton from "../../_components/TripSettlementShareButton";
 
 export default async function Settlement({
   params,
@@ -22,18 +23,15 @@ export default async function Settlement({
   return (
     <Modal title="📃 정산 결과서">
       <div className="flex flex-col gap-6">
-        {/* 상단 요약 */}
         <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5">
           <div className="mb-3 flex items-center justify-between">
             <p className="text-sm text-gray-500">여행</p>
             <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
           </div>
-
           <div className="mb-4 flex items-center justify-between">
             <p className="text-sm text-gray-500">총 지출 금액</p>
             <p className="text-lg font-bold text-gray-900">{formatAmount(totalAmount)}원</p>
           </div>
-
           <div>
             <p className="mb-2 text-sm text-gray-500">참여자</p>
             <div className="mb-3 flex flex-wrap gap-2">
@@ -48,8 +46,6 @@ export default async function Settlement({
             </div>
           </div>
         </div>
-
-        {/* 정산 내역 하이라이트 */}
         <div className="rounded-2xl border border-blue-100 bg-blue-50/60 p-5">
           <div className="mb-4 flex items-center justify-between">
             <div>
@@ -59,7 +55,6 @@ export default async function Settlement({
               총 {transactions.length}건
             </span>
           </div>
-
           {transactions.length === 0 ? (
             <div className="rounded-xl border border-blue-100 bg-white py-10 text-center text-sm text-gray-400">
               정산할 금액이 없습니다.
@@ -92,6 +87,9 @@ export default async function Settlement({
               ))}
             </div>
           )}
+        </div>
+        <div className="w-full flex flex-col gap-1 sm:flex-row sm:justify-end">
+          <TripSettlementShareButton demoKey={demoKey} tripId={tripId} />
         </div>
       </div>
     </Modal>

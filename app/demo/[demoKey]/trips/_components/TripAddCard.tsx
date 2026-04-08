@@ -28,17 +28,23 @@ export default function TripAddCard({ demoKey }: { demoKey: string }) {
   };
 
   return (
-    <div className="overflow-hidden border-4 border-blue-300 border-dashed rounded-2xl p-6 flex gap-3 bg-blue-50">
-      <form ref={formRef} onSubmit={handleSubmit} className="flex w-full gap-3">
+    <div className="overflow-hidden border-4 border-blue-300 border-dashed rounded-2xl p-6 flex bg-blue-50">
+      <form ref={formRef} onSubmit={handleSubmit} className="flex items-center w-full gap-3">
         <input
           type="text"
           name="title"
           placeholder="새 여행 이름을 입력하세요"
           required
-          className="flex-1 bg-white py-3 h-11 px-5 rounded-lg"
+          className="w-full flex-1 bg-white py-3 h-11 px-5 rounded-lg"
         />
 
-        <Button size="xl" bgColor="blue.400" color="white" rounded="lg" type="submit">
+        <Button
+          size={{ mdDown: "sm", md: "lg" }}
+          bgColor="blue.400"
+          color="white"
+          rounded="lg"
+          type="submit"
+        >
           + 여행 추가
         </Button>
       </form>

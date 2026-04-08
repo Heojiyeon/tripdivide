@@ -38,7 +38,7 @@ export default async function Page({
           <span className="text-gray-400">{formatDate(createdAt, true)}</span>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row items-center gap-2">
           <TripStatusButton demoKey={demoKey} tripId={tripId} status={status} />
           <TripSettlementButton demoKey={demoKey} tripId={tripId} status={status} />
         </div>

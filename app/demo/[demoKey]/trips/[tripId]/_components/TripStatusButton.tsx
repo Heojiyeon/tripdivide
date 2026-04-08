@@ -1,6 +1,7 @@
 "use client";
 
 import { TripDetailResponse } from "@/types/api";
+import { Button } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 
@@ -35,16 +36,16 @@ export default function TripStatusButton({
   };
 
   return (
-    <button
-      type="button"
-      className={`h-10 rounded-xl px-4 text-sm font-semibold transition ${
-        isOpen
-          ? "bg-green-100 text-green-700 hover:bg-green-200"
-          : "bg-blue-100 text-blue-700 hover:bg-blue-200"
-      }`}
-      onClick={handleClickButton}
-    >
-      {isOpen ? "정산 확정" : "정산 수정"}
-    </button>
+    <>
+      <Button
+        onClick={handleClickButton}
+        size={{ mdDown: "xs", md: "md" }}
+        color={isOpen ? "green.700" : "blue.700"}
+        bgColor={isOpen ? "green.100" : "blue.100"}
+        rounded={"xl"}
+      >
+        {isOpen ? "정산 확정" : "정산 수정"}
+      </Button>
+    </>
   );
 }
