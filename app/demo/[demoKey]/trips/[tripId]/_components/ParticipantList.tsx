@@ -96,19 +96,19 @@ const AddParticipantForm = ({
     <form
       ref={formRef}
       onSubmit={handleSubmit}
-      className="flex w-full gap-3 lg:w-auto lg:min-w-[420px]"
+      className="flex w-full flex-col gap-2 sm:flex-row lg:w-80 lg:max-w-full"
     >
       <input
         type="text"
         name="name"
         id="participant-name"
         placeholder="참여자 이름을 입력하세요"
-        className="h-10 flex-1 rounded-xl border border-gray-300 bg-white px-4 text-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+        className="h-10 min-w-0 flex-1 rounded-xl border border-gray-300 bg-white px-4 text-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
         required
       />
       <button
         type="submit"
-        className="h-10 shrink-0 rounded-xl bg-blue-500 px-4 text-sm font-medium text-white transition hover:bg-blue-600"
+        className="h-10 w-full shrink-0 rounded-xl bg-blue-500 px-4 text-sm font-medium text-white transition hover:bg-blue-600 sm:w-auto"
       >
         추가
       </button>
