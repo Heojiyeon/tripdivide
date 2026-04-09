@@ -24,10 +24,8 @@
 
 ### 1. 데이터 모델링 (ERD)
 
-![TripDivide ERD](./docs/images/erd.png)
-
 - **Problem**: 지출(Expense)과 참여자(Participant) 간의 다대다 관계 처리 및 결제 주체 명시
-- **Solution**: `Trip` - `Participant` - `Expense` 간의 관계를 정규화하고, 각 지출마다 결제자(Payer)와 혜택을 받는 참여자(SplitDetails)를 명확히 분리하여 데이터 무결성 확보
+- **Solution**: `Trip` - `Participant` - `Expense` 간의 관계를 정규화하고, 각 지출마다 결제자와 정산 참여자를 분리하여 데이터 무결성 확보
 - **Key Insight**: 지출과 참여자 사이의 N:N 관계를 단순 연결이 아닌 "분담 금액이 포함된 관계"로 모델링, 이를 위해 ExpenseSplit을 별도 엔티티로 분리
 
 ### 2. API 설계 리팩토링: 동사 중심에서 리소스 중심으로
