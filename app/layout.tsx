@@ -21,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" data-theme="light" suppressHydrationWarning>
+    <html lang="ko">
       <body className={`${pretendard.className} antialiased`}>
         <Provider>
           <header>
