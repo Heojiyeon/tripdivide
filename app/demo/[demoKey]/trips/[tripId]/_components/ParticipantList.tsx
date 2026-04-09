@@ -2,16 +2,9 @@
 
 import { TripDetailResponse } from "@/types/api";
 import { useRouter } from "next/navigation";
-import { RefObject, useRef } from "react";
+import { RefObject, useRef, useState } from "react";
 import { HiUsers } from "react-icons/hi";
 
-/**
- *
- * @param demoKey 데모 키
- * @param tripId 여행 아이디
- * @param participants 참여자 데이터
- * @returns 참여자 리스트 컴포넌트
- */
 export default function ParticipantList({
   demoKey,
   tripId,
@@ -25,22 +18,28 @@ export default function ParticipantList({
 }) {
   const formRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
-  const canAddParticipant = status === "OPEN" ? true : false;
+  const canAddParticipant = status === "OPEN";
 
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
 
-    const formData = new FormData(e.currentTarget);
+    try {
+      const formData = new FormData(e.currentTarget);
 
-    await fetch(`/api/demo/${demoKey}/trips/${tripId}/participants`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: formData.get("name") }),
-    });
+      await fetch(`/api/demo/${demoKey}/trips/${tripId}/participants`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: formData.get("name") }),
+      });
 
-    formRef.current?.reset();
-    router.refresh();
+      formRef.current?.reset();
+      router.refresh();
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -69,11 +68,13 @@ export default function ParticipantList({
             )}
           </div>
         </div>
+
         <div className="lg:self-center">
           <AddParticipantForm
             canAddParticipant={canAddParticipant}
             formRef={formRef}
             handleSubmit={handleSubmit}
+            loading={loading}
           />
         </div>
       </div>
@@ -85,10 +86,12 @@ const AddParticipantForm = ({
   canAddParticipant,
   formRef,
   handleSubmit,
+  loading,
 }: {
   canAddParticipant: boolean;
   formRef: RefObject<HTMLFormElement | null>;
   handleSubmit: (e: React.SubmitEvent<HTMLFormElement>) => Promise<void>;
+  loading: boolean;
 }) => {
   if (!canAddParticipant) return null;
 
@@ -103,14 +106,16 @@ const AddParticipantForm = ({
         name="name"
         id="participant-name"
         placeholder="참여자 이름을 입력하세요"
-        className="h-10 flex-1 rounded-xl border border-gray-300 bg-white px-4 text-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+        disabled={loading}
+        className="h-10 flex-1 rounded-xl border border-gray-300 bg-white px-4 text-sm outline-none transition disabled:bg-gray-100"
         required
       />
       <button
         type="submit"
-        className="h-10 shrink-0 rounded-xl bg-blue-500 px-4 text-sm font-medium text-white transition hover:bg-blue-600"
+        disabled={loading}
+        className="h-10 shrink-0 rounded-xl bg-blue-500 px-4 text-sm font-medium text-white transition hover:bg-blue-600 disabled:cursor-not-allowed disabled:bg-blue-300"
       >
-        추가
+        {loading ? "loading..." : "추가"}
       </button>
     </form>
   );

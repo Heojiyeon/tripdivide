@@ -26,6 +26,8 @@ export default function ExpenseForm({
   const [splits, setSplits] = useState<{ participantId: string; shareAmount: number }[]>([]);
   const [alertMessage, setAlertMessage] = useState("");
 
+  const [loading, setLoading] = useState(false);
+
   const parseCurrency = (value: string) => Number(value.replaceAll(",", "") || 0);
 
   const formatCurrency = (value: string | number) => {
@@ -122,6 +124,7 @@ export default function ExpenseForm({
   /** 정산 추가 제출 함수 */
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
       const formData = new FormData(e.currentTarget);
@@ -151,6 +154,7 @@ export default function ExpenseForm({
       setAmount("");
       setSplitEqualMode(true);
       setSplits([]);
+      setLoading(false);
 
       router.refresh();
     } catch (error) {
@@ -169,134 +173,132 @@ export default function ExpenseForm({
     return () => clearTimeout(timer);
   }, [alertMessage]);
 
-  // useEffect(() => {
-  //   if (!splitEqualMode) return;
-  //   calculateEqualSplits(amountValue);
-  // }, [amountValue, splitEqualMode, splits.length]);
-
   return (
     <>
       <form ref={formRef} onSubmit={handleSubmit} className="flex flex-col gap-5">
-        {/* 지출명 / 금액 */}
-        <div className="flex flex-col gap-3">
-          <input
-            type="text"
-            name="title"
-            id="expense-title"
-            placeholder="지출명"
-            className="h-11 rounded-xl border border-gray-300 px-4 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
-            required
-          />
-
-          <div className="relative">
+        <fieldset disabled={loading}>
+          {/* 지출명 / 금액 */}
+          <div className="flex flex-col gap-3">
             <input
               type="text"
-              name="amount"
-              id="expense-amount"
-              inputMode="numeric"
-              placeholder="지출 금액"
-              value={amount}
-              onChange={handleAmountChange}
-              className="h-11 w-full rounded-xl border border-gray-300 px-4 pr-10 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+              name="title"
+              id="expense-title"
+              placeholder="지출명"
+              className="h-11 rounded-xl border border-gray-300 px-4 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
               required
             />
-            <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-sm text-gray-500">
-              원
-            </span>
-          </div>
-        </div>
 
-        {/* 참여자 */}
-        <div>
-          <p className="mb-2 text-sm font-medium text-gray-500">정산 참여자</p>
-          <div className="flex flex-wrap gap-2">
-            {participants.map((participant) => (
-              <label
-                key={participant.id}
-                className="flex cursor-pointer items-center gap-2 rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-800"
-              >
+            <div className="relative">
+              <input
+                type="text"
+                name="amount"
+                id="expense-amount"
+                inputMode="numeric"
+                placeholder="지출 금액"
+                value={amount}
+                onChange={handleAmountChange}
+                className="h-11 w-full rounded-xl border border-gray-300 px-4 pr-10 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                required
+              />
+              <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-sm text-gray-500">
+                원
+              </span>
+            </div>
+          </div>
+
+          {/* 참여자 */}
+          <div>
+            <p className="mb-2 text-sm font-medium text-gray-500">정산 참여자</p>
+            <div className="flex flex-wrap gap-2">
+              {participants.map((participant) => (
+                <label
+                  key={participant.id}
+                  className="flex cursor-pointer items-center gap-2 rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-800"
+                >
+                  <input
+                    type="checkbox"
+                    name="expense-participants"
+                    value={participant.id}
+                    onChange={handleSplits}
+                    checked={splits.some((split) => split.participantId === participant.id)}
+                  />
+                  {participant.name}
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* 결제자 */}
+          <div>
+            <p className="mb-2 text-sm font-medium text-gray-500">정산 책임자</p>
+            <select
+              name="paidby"
+              id="expense-paidby"
+              defaultValue=""
+              className="h-11 w-full rounded-xl border border-gray-300 px-4 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+              required
+            >
+              <option value="">선택</option>
+              {participants.map((participant) => (
+                <option key={participant.id} value={participant.id}>
+                  {participant.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* 정산 방식 */}
+          <div className="rounded-xl border border-gray-100 bg-gray-50 p-4">
+            <div className="mb-3 flex items-center justify-between">
+              <p className="text-sm font-medium text-gray-500">정산</p>
+
+              <label className="flex items-center gap-2 text-sm font-semibold text-blue-500">
+                균등 분배
                 <input
                   type="checkbox"
-                  name="expense-participants"
-                  value={participant.id}
-                  onChange={handleSplits}
-                  checked={splits.some((split) => split.participantId === participant.id)}
+                  id="checkEqual"
+                  checked={splitEqualMode}
+                  onChange={handleSetSplits}
                 />
-                {participant.name}
               </label>
-            ))}
-          </div>
-        </div>
+            </div>
 
-        {/* 결제자 */}
-        <div>
-          <p className="mb-2 text-sm font-medium text-gray-500">정산 책임자</p>
-          <select
-            name="paidby"
-            id="expense-paidby"
-            defaultValue=""
-            className="h-11 w-full rounded-xl border border-gray-300 px-4 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
-            required
-          >
-            <option value="">선택</option>
-            {participants.map((participant) => (
-              <option key={participant.id} value={participant.id}>
-                {participant.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* 정산 방식 */}
-        <div className="rounded-xl border border-gray-100 bg-gray-50 p-4">
-          <div className="mb-3 flex items-center justify-between">
-            <p className="text-sm font-medium text-gray-500">정산</p>
-
-            <label className="flex items-center gap-2 text-sm font-semibold text-blue-500">
-              균등 분배
-              <input
-                type="checkbox"
-                id="checkEqual"
-                checked={splitEqualMode}
-                onChange={handleSetSplits}
-              />
-            </label>
-          </div>
-
-          <div className="flex flex-col gap-2">
-            {splits.map((split) => (
-              <div
-                key={split.participantId}
-                className="flex items-center justify-between rounded-lg bg-white px-3 py-2"
-              >
-                <span className="text-sm font-medium text-gray-700">
-                  {getNameById(split.participantId)}
-                </span>
-
-                <div className="relative">
-                  <input
-                    type="text"
-                    inputMode="numeric"
-                    onChange={(e) => handleManualSplits(e, split)}
-                    value={formatCurrency(split.shareAmount)}
-                    disabled={splitEqualMode}
-                    className="w-28 rounded-lg border border-gray-300 px-2 py-1 pr-7 text-right text-sm outline-none disabled:bg-gray-100"
-                  />
-                  <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-500">
-                    원
+            <div className="flex flex-col gap-2">
+              {splits.map((split) => (
+                <div
+                  key={split.participantId}
+                  className="flex items-center justify-between rounded-lg bg-white px-3 py-2"
+                >
+                  <span className="text-sm font-medium text-gray-700">
+                    {getNameById(split.participantId)}
                   </span>
+
+                  <div className="relative">
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      onChange={(e) => handleManualSplits(e, split)}
+                      value={formatCurrency(split.shareAmount)}
+                      disabled={splitEqualMode}
+                      className="w-28 rounded-lg border border-gray-300 px-2 py-1 pr-7 text-right text-sm outline-none disabled:bg-gray-100"
+                    />
+                    <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-500">
+                      원
+                    </span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-        {/* 버튼 */}
-        <button
-          type="submit"
-          className="mt-2 h-11 w-full rounded-xl bg-blue-500 text-sm font-semibold text-white transition hover:bg-blue-600"
-        >
-          지출 추가
-        </button>
+          {/* 버튼 */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="mt-2 h-11 w-full rounded-xl bg-blue-500 text-sm font-semibold text-white transition hover:bg-blue-600"
+          >
+            {loading ? "loading..." : "지출 추가"}
+          </button>
+        </fieldset>
       </form>
       {alertMessage && (
         <div className="fixed bottom-10 left-1/2 z-50 w-[calc(100%-32px)] max-w-md -translate-x-1/2">

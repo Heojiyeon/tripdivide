@@ -1,8 +1,8 @@
 "use client";
 
 import { TripDetailResponse } from "@/types/api";
-import Link from "next/link";
-import { useMemo } from "react";
+import { useRouter } from "next/navigation";
+import { useTransition } from "react";
 
 export default function TripSettlementButton({
   demoKey,
@@ -13,16 +13,25 @@ export default function TripSettlementButton({
   tripId: string;
   status: TripDetailResponse["status"];
 }) {
-  const isOpen = useMemo(() => status === "OPEN", [status]);
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
-  if (isOpen) return null;
+  if (status === "OPEN") return null;
+
+  const handleClick = () => {
+    startTransition(() => {
+      router.push(`/demo/${demoKey}/trips/${tripId}/settlement`);
+    });
+  };
 
   return (
-    <Link
-      href={`/demo/${demoKey}/trips/${tripId}/settlement`}
-      className="inline-flex items-center rounded-xl border border-gray-200 bg-white p-2 md:p-2.5 md:text-sm text-xs font-medium text-gray-700 transition hover:border-blue-300 hover:text-blue-600"
+    <button
+      type="button"
+      onClick={handleClick}
+      disabled={isPending}
+      className="inline-flex items-center rounded-xl border border-gray-200 bg-white p-2 text-xs font-medium text-gray-700 transition hover:border-blue-300 hover:text-blue-600 disabled:cursor-not-allowed disabled:opacity-60 md:p-2.5 md:text-sm"
     >
-      정산 결과
-    </Link>
+      {isPending ? "loading..." : "정산 결과"}
+    </button>
   );
 }
