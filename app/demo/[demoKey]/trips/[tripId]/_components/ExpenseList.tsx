@@ -71,29 +71,32 @@ export default function ExpenseList({
   };
 
   return (
-    <div className="w-ful rounded-2xl border border-gray-200 bg-white px-5 py-5">
+    <div className="w-full overflow-x-hidden rounded-2xl border border-gray-200 bg-white px-5 py-5">
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_420px]">
-        <section className="min-w-0">
-          <div className="mb-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-500">
+        {/* 지출 내역 헤더 */}
+        <section className="flex min-w-0 flex-col">
+          <div className="mb-4 flex min-w-0 gap-3 justify-between">
+            <div className="flex min-w-0 items-center gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-500">
                 <HiOutlineCurrencyDollar className="text-lg" />
               </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900">지출 내역</h3>
+              <div className="min-w-0">
+                <h3 className="truncate text-lg font-semibold text-gray-900">지출 내역</h3>
               </div>
             </div>
             {canAddExpense && (
               <button
                 type="button"
                 onClick={handleClickAddExpense}
-                className="rounded-xl border border-gray-200 px-3 py-2 text-sm font-medium text-gray-600 transition hover:border-blue-300 hover:text-blue-600"
+                className="shrink-0 self-start rounded-xl border border-gray-200 px-3 py-2 text-sm font-medium text-gray-600 transition hover:border-blue-300 hover:text-blue-600 sm:self-auto"
               >
-                지출 내역 추가하기 +
+                <span className="sm:hidden">추가 +</span>
+                <span className="hidden sm:inline">지출 내역 추가하기 +</span>
               </button>
             )}
           </div>
-          <div className="max-h-[420px] overflow-y-auto rounded-2xl border border-gray-100 bg-gray-50 p-4">
+          {/* 지출 내역 */}
+          <div className="max-h-[420px] min-w-0 overflow-y-auto rounded-2xl border border-gray-100 bg-gray-50 p-4">
             {expenses.length === 0 ? (
               <div className="flex min-h-[220px] flex-col items-center justify-center text-center">
                 <p className="text-base font-medium text-gray-700">
@@ -102,19 +105,21 @@ export default function ExpenseList({
                 <p className="mt-1 text-sm text-gray-400">첫 번째 지출을 추가해보세요.</p>
               </div>
             ) : (
-              <div className="flex flex-col gap-5">
+              <div className="flex min-w-0 flex-col gap-5">
                 {grouppingExpenses.map((group) => (
-                  <div key={group.date}>
-                    <p className="mb-3 text-sm font-semibold text-gray-400">{group.date}</p>
-                    <div className="flex flex-col gap-2">
+                  <div key={group.date} className="min-w-0">
+                    <p className="mb-3 truncate text-sm font-semibold text-gray-400">
+                      {group.date}
+                    </p>
+                    <div className="flex min-w-0 flex-col gap-2">
                       {group.items.map((item) => (
                         <button
                           key={item.id}
                           type="button"
                           onClick={() => handleClickExpense(item.id)}
-                          className="flex w-full items-center justify-between rounded-xl bg-white px-4 py-3 text-left transition hover:border-blue-200 hover:bg-blue-50"
+                          className="flex w-full min-w-0 items-center justify-between gap-3 rounded-xl bg-white px-4 py-3 text-left transition hover:border-blue-200 hover:bg-blue-50"
                         >
-                          <div className="min-w-0">
+                          <div className="min-w-0 flex-1">
                             <p className="truncate font-medium text-gray-900">{item.title}</p>
                           </div>
                           <span className="shrink-0 text-sm font-semibold text-gray-700">
@@ -129,9 +134,10 @@ export default function ExpenseList({
             )}
           </div>
         </section>
-        <aside className="rounded-2xl border border-gray-100 bg-gray-50 p-5">
-          <div className="mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">
+        {/* 지출 추가 폼  */}
+        <aside className="min-w-0 rounded-2xl border border-gray-100 bg-gray-50 p-5">
+          <div className="mb-4 min-w-0">
+            <h3 className="truncate text-lg font-semibold text-gray-900">
               {status === "SETTLED"
                 ? "정산 상세 내역"
                 : canEdit && canAddExpense
@@ -139,7 +145,8 @@ export default function ExpenseList({
                   : "지출 정보"}
             </h3>
           </div>
-          <div className="rounded-2xl bg-white p-4">
+
+          <div className="min-w-0 rounded-2xl bg-white p-4">
             {canEdit && canAddExpense ? (
               <ExpenseForm demoKey={demoKey} tripId={tripId} participants={participants} />
             ) : selectedExpense ? (

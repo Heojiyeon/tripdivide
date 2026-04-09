@@ -90,17 +90,13 @@ const AddParticipantForm = ({
   if (!canAddParticipant) return null;
 
   return (
-    <form
-      ref={formRef}
-      onSubmit={handleSubmit}
-      className="flex w-full gap-3 lg:w-auto lg:min-w-[420px]"
-    >
+    <form ref={formRef} onSubmit={handleSubmit} className="flex w-full gap-3">
       <input
         type="text"
         name="name"
         id="participant-name"
         placeholder="참여자 이름을 입력하세요"
-        className="h-10 flex-1 rounded-xl border border-gray-300 bg-white px-4 text-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+        className="h-10 flex-1 min-w-0 rounded-xl border border-gray-300 bg-white px-4 text-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
         required
       />
       <button
