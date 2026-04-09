@@ -43,31 +43,30 @@ export default function ExpenseForm({
   /** 메인 금액 입력 핸들러 */
   const handleAmountChange = (e: ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value.replaceAll(",", "").replace(/\D/g, "");
+    const nextAmount = Number(raw || 0);
 
-    if (!raw) {
-      setAmount("");
-      return;
+    setAmount(raw ? nextAmount.toLocaleString("ko-KR") : "");
+
+    if (splitEqualMode) {
+      setSplits((prevSplits) => getEqualSplits(nextAmount, prevSplits));
     }
-
-    setAmount(Number(raw).toLocaleString("ko-KR"));
   };
 
-  /** 지출 금액을 분배하는 함수 */
-  const calculateEqualSplits = (currentAmount: number) => {
-    if (splitEqualMode) {
-      setSplits((prevSplits) => {
-        const n = prevSplits.length;
-        if (n === 0) return prevSplits;
+  /** 지출 균등 분배 함수 */
+  const getEqualSplits = (
+    currentAmount: number,
+    currentSplits: { participantId: string; shareAmount: number }[],
+  ) => {
+    const n = currentSplits.length;
+    if (n === 0) return currentSplits;
 
-        const base = Math.floor(currentAmount / n);
-        const remainder = currentAmount % n;
+    const base = Math.floor(currentAmount / n);
+    const remainder = currentAmount % n;
 
-        return prevSplits.map((split, idx) => ({
-          ...split,
-          shareAmount: idx < remainder ? base + 1 : base,
-        }));
-      });
-    }
+    return currentSplits.map((split, idx) => ({
+      ...split,
+      shareAmount: idx < remainder ? base + 1 : base,
+    }));
   };
 
   /** 지출 수동 분배 핸들링 함수 */
@@ -91,16 +90,22 @@ export default function ExpenseForm({
     );
   };
 
-  /** 정산 리스트 생성 함수 */
+  /** 정산 리스트 생성 함수
+   * 정산 참여자 추가 시, 실행되는 함수 -> 금액이 문제임
+   */
   const handleSplits = (e: ChangeEvent<HTMLInputElement>) => {
     const { value: id, checked } = e.target;
 
     setSplits((prevSplits) => {
-      if (checked) {
-        return [...prevSplits, { participantId: id, shareAmount: amountValue }];
+      const nextSplits = checked
+        ? [...prevSplits, { participantId: id, shareAmount: 0 }]
+        : prevSplits.filter((split) => split.participantId !== id);
+
+      if (splitEqualMode) {
+        return getEqualSplits(amountValue, nextSplits);
       }
 
-      return prevSplits.filter((split) => split.participantId !== id);
+      return nextSplits;
     });
   };
 
@@ -110,7 +115,7 @@ export default function ExpenseForm({
     setSplitEqualMode(checked);
 
     if (checked) {
-      calculateEqualSplits(amountValue);
+      setSplits((prevSplits) => getEqualSplits(amountValue, prevSplits));
     }
   };
 
@@ -164,10 +169,10 @@ export default function ExpenseForm({
     return () => clearTimeout(timer);
   }, [alertMessage]);
 
-  useEffect(() => {
-    if (!splitEqualMode) return;
-    calculateEqualSplits(amountValue);
-  }, [amountValue, splitEqualMode, splits.length]);
+  // useEffect(() => {
+  //   if (!splitEqualMode) return;
+  //   calculateEqualSplits(amountValue);
+  // }, [amountValue, splitEqualMode, splits.length]);
 
   return (
     <>
