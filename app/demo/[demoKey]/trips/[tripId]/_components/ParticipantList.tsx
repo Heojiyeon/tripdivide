@@ -2,7 +2,7 @@
 
 import { TripDetailResponse } from "@/types/api";
 import { useRouter } from "next/navigation";
-import { RefObject, useMemo, useRef } from "react";
+import { RefObject, useRef } from "react";
 import { HiUsers } from "react-icons/hi";
 
 /**
@@ -26,7 +26,7 @@ export default function ParticipantList({
   const formRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
 
-  const canAddParticipant = useMemo(() => (status === "OPEN" ? true : false), [status]);
+  const canAddParticipant = status === "OPEN" ? true : false;
 
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -45,11 +45,12 @@ export default function ParticipantList({
 
   return (
     <div className="w-full rounded-2xl border border-gray-200 bg-white px-5 py-4">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <div className="flex items-start gap-4">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div className="flex min-w-0 flex-1 items-start gap-4">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-500">
             <HiUsers className="text-lg" />
           </div>
+
           <div className="min-w-0">
             <p className="mb-2 text-sm font-medium text-gray-500">참여자</p>
             {participants.length > 0 ? (
@@ -68,11 +69,13 @@ export default function ParticipantList({
             )}
           </div>
         </div>
-        <AddParticipantForm
-          canAddParticipant={canAddParticipant}
-          formRef={formRef}
-          handleSubmit={handleSubmit}
-        />
+        <div className="lg:self-center">
+          <AddParticipantForm
+            canAddParticipant={canAddParticipant}
+            formRef={formRef}
+            handleSubmit={handleSubmit}
+          />
+        </div>
       </div>
     </div>
   );
@@ -90,13 +93,17 @@ const AddParticipantForm = ({
   if (!canAddParticipant) return null;
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit} className="flex w-full gap-3">
+    <form
+      ref={formRef}
+      onSubmit={handleSubmit}
+      className="flex w-full gap-3 lg:w-auto lg:min-w-[420px]"
+    >
       <input
         type="text"
         name="name"
         id="participant-name"
         placeholder="참여자 이름을 입력하세요"
-        className="h-10 flex-1 min-w-0 rounded-xl border border-gray-300 bg-white px-4 text-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+        className="h-10 flex-1 rounded-xl border border-gray-300 bg-white px-4 text-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
         required
       />
       <button
