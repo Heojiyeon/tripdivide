@@ -18,7 +18,7 @@ export default function Modal({
 
   const handleClose = () => {
     if (closeHref) {
-      router.replace(closeHref);
+      window.location.replace(closeHref);
       return;
     }
 
@@ -30,6 +30,7 @@ export default function Modal({
       <div className="relative w-full max-w-lg  mx-4 rounded-lg bg-white p-6 shadow-xl">
         <button
           onClick={handleClose}
+          aria-label="닫기"
           className="absolute right-4 top-4 text-gray-500 hover:text-black"
         >
           <Icon size={"xl"}>
