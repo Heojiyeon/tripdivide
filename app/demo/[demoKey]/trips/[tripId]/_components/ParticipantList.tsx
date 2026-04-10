@@ -107,7 +107,7 @@ const AddParticipantForm = ({
         id="participant-name"
         placeholder="참여자 이름을 입력하세요"
         disabled={loading}
-        className="h-10 flex-1 rounded-xl border border-gray-300 bg-white px-4 text-sm outline-none transition disabled:bg-gray-100"
+        className="min-w-0 h-10 flex-1 rounded-xl border border-gray-300 bg-white px-4 text-sm outline-none transition disabled:bg-gray-100"
         required
       />
       <button

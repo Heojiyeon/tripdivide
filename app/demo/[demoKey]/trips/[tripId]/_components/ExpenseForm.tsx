@@ -175,10 +175,10 @@ export default function ExpenseForm({
 
   return (
     <>
-      <form ref={formRef} onSubmit={handleSubmit} className="flex flex-col gap-5">
-        <fieldset disabled={loading}>
+      <form ref={formRef} onSubmit={handleSubmit} className="flex w-full min-w-0 flex-col">
+        <fieldset disabled={loading} className="flex min-w-0 flex-col gap-4">
           {/* 지출명 / 금액 */}
-          <div className="flex flex-col gap-3">
+          <div className="min-w-0 flex flex-col gap-3">
             <input
               type="text"
               name="title"
@@ -207,13 +207,13 @@ export default function ExpenseForm({
           </div>
 
           {/* 참여자 */}
-          <div>
+          <div className="min-w-0">
             <p className="mb-2 text-sm font-medium text-gray-500">정산 참여자</p>
             <div className="flex flex-wrap gap-2">
               {participants.map((participant) => (
                 <label
                   key={participant.id}
-                  className="flex cursor-pointer items-center gap-2 rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-800"
+                  className="flex min-w-0 max-w-full cursor-pointer items-center gap-2 rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-800"
                 >
                   <input
                     type="checkbox"
@@ -222,7 +222,7 @@ export default function ExpenseForm({
                     onChange={handleSplits}
                     checked={splits.some((split) => split.participantId === participant.id)}
                   />
-                  {participant.name}
+                  <span className="truncate">{participant.name}</span>
                 </label>
               ))}
             </div>
@@ -249,7 +249,7 @@ export default function ExpenseForm({
 
           {/* 정산 방식 */}
           <div className="rounded-xl border border-gray-100 bg-gray-50 p-4">
-            <div className="mb-3 flex items-center justify-between">
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
               <p className="text-sm font-medium text-gray-500">정산</p>
 
               <label className="flex items-center gap-2 text-sm font-semibold text-blue-500">
@@ -267,20 +267,20 @@ export default function ExpenseForm({
               {splits.map((split) => (
                 <div
                   key={split.participantId}
-                  className="flex items-center justify-between rounded-lg bg-white px-3 py-2"
+                  className="flex min-w-0 flex-wrap items-center justify-between gap-2 rounded-lg bg-white px-3 py-2 sm:flex-nowrap"
                 >
-                  <span className="text-sm font-medium text-gray-700">
+                  <span className="min-w-0 flex-1 truncate text-sm font-medium text-gray-700">
                     {getNameById(split.participantId)}
                   </span>
 
-                  <div className="relative">
+                  <div className="relative ml-auto w-28 shrink-0">
                     <input
                       type="text"
                       inputMode="numeric"
                       onChange={(e) => handleManualSplits(e, split)}
                       value={formatCurrency(split.shareAmount)}
                       disabled={splitEqualMode}
-                      className="w-28 rounded-lg border border-gray-300 px-2 py-1 pr-7 text-right text-sm outline-none disabled:bg-gray-100"
+                      className="w-full rounded-lg border border-gray-300 px-2 py-1 pr-7 text-right text-sm outline-none disabled:bg-gray-100"
                     />
                     <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-500">
                       원
