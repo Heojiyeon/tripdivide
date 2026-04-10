@@ -2,4 +2,5 @@
 
 body {
   line-height: 1.6;
+  font-family: var(--font-pretendard), "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif;
 }

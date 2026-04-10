@@ -21,7 +21,7 @@ export default async function Settlement({
 
   if (!res.ok) {
     return (
-      <Modal title="📃 정산 결과서">
+      <Modal title="📃 정산 결과서" closeHref={`/`}>
         <div className="flex flex-col gap-6 text-sm text-gray-600">
           정산 결과를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.
         </div>
@@ -32,7 +32,7 @@ export default async function Settlement({
   const { title, totalAmount, participants, transactions } = data;
 
   return (
-    <Modal title="📃 정산 결과서">
+    <Modal title="📃 정산 결과서" closeHref={`/`}>
       <div className="flex flex-col gap-6">
         <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5">
           <div className="mb-3 flex items-center justify-between">

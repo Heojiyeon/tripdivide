@@ -5,14 +5,31 @@ import { useRouter } from "next/navigation";
 import { ReactNode } from "react";
 import { HiOutlineX } from "react-icons/hi";
 
-export default function Modal({ title, children }: { title: string; children: ReactNode }) {
+export default function Modal({
+  title,
+  children,
+  closeHref,
+}: {
+  title: string;
+  children: ReactNode;
+  closeHref?: string;
+}) {
   const router = useRouter();
+
+  const handleClose = () => {
+    if (closeHref) {
+      router.replace(closeHref);
+      return;
+    }
+
+    router.back();
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs">
       <div className="relative w-full max-w-lg  mx-4 rounded-lg bg-white p-6 shadow-xl">
         <button
-          onClick={() => router.back()}
+          onClick={handleClose}
           className="absolute right-4 top-4 text-gray-500 hover:text-black"
         >
           <Icon size={"xl"}>
