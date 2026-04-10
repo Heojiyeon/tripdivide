@@ -17,6 +17,22 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.ico",
   },
+  openGraph: {
+    title: "TripDivide",
+    description: "여행 지출을 나누고 정산 결과를 확인하는 서비스",
+    url: "https://tripdivide.vercel.app",
+    siteName: "TripDivide",
+    images: [
+      {
+        url: "/og.png",
+        width: 1200,
+        height: 630,
+        alt: "TripDivide",
+      },
+    ],
+    locale: "ko_KR",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
