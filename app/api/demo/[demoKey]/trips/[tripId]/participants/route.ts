@@ -41,7 +41,8 @@ export async function POST(
 
   const { name } = await request.json();
 
-  if (typeof name !== "string" || !name.trim()) return apiError(ErrorCode.BAD_REQUEST, 400);
+  if (!name || typeof name !== "string" || !name.trim())
+    return apiError(ErrorCode.BAD_REQUEST, 400);
 
   // 1. trip 존재 검증 및 SETTLED 상태인 경우 체크
   const currentTrip = await prisma.trip.findFirst({

@@ -15,8 +15,9 @@ export async function GET(
   { params }: { params: Promise<{ demoKey: string; tripId: string }> },
 ) {
   const { demoKey, tripId } = await params;
-  if (!demoKey) return apiError(ErrorCode.BAD_REQUEST, 400);
+  if (!demoKey || !tripId) return apiError(ErrorCode.BAD_REQUEST, 400);
 
+  // 여행 상세 정보 조회
   const trip = await prisma.trip.findFirst({
     where: {
       id: tripId,
@@ -62,14 +63,24 @@ export async function PATCH(
   // 1. trip 존재 검증
   const validTrip = await prisma.trip.findFirst({
     where: {
-      demoKey,
       id: tripId,
+      demoKey,
+    },
+    include: {
+      expenses: {
+        include: {
+          splits: true,
+        },
+      },
     },
   });
 
   if (!validTrip) return apiError(ErrorCode.TRIP_NOT_FOUND, 404);
 
-  // 2. 상태 검증
+  // 2. 지출 내역 존재 검증
+  if (validTrip.expenses.length === 0) return apiError(ErrorCode.EXPENSE_NOT_FOUND, 400);
+
+  // 3. 상태 검증
   const { status } = await request.json();
 
   if (!status || !VALID_STATUS.includes(status)) {

@@ -1,7 +1,9 @@
 "use client";
 
+import { toaster } from "@/components/ui/toaster";
 import { ensureMinDelay } from "@/lib/format";
 import { Badge, Button, Card, Icon, VStack } from "@chakra-ui/react";
+
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { HiCalculator, HiLightBulb, HiOutlinePaperAirplane, HiUsers } from "react-icons/hi";
@@ -15,34 +17,57 @@ export default function Home() {
 
   const handleClickDemo시작 = async () => {
     setLoading(true);
-
     const start = Date.now();
 
-    // (1) localStorage 값 확인
-    const existedDemoKey = window.localStorage.getItem("demoKey");
-    if (existedDemoKey) {
+    try {
+      // (1) localStorage 값 확인
+      const existedDemoKey = window.localStorage.getItem("demoKey");
+      if (existedDemoKey === "") {
+        window.localStorage.removeItem("demoKey");
+
+        toaster.create({
+          title: "데모 정보 복구",
+          description: "저장된 데모 정보가 유효하지 않아 새로 시작합니다.",
+          type: "info",
+        });
+      }
+
+      if (existedDemoKey) {
+        await ensureMinDelay(start);
+        return router.push(`/demo/${existedDemoKey}/trips`);
+      }
+
+      // (2) demoKey 생성
+      const res = await fetch("/api/demo", {
+        method: "POST",
+      });
+      const result = await res.json().catch(() => null);
+
+      if (!res.ok) {
+        return toaster.create({
+          title: "데모 시작 실패",
+          description: result?.message ?? "데모 시작 중 오류가 발생했습니다.",
+          type: "error",
+        });
+      }
+
+      const demoKey = result?.demoKey;
+
+      window.localStorage.setItem("demoKey", demoKey);
+
       await ensureMinDelay(start);
-      return router.push(`/demo/${existedDemoKey}/trips`);
+      return router.push(`/demo/${demoKey}/trips`);
+    } catch (error) {
+      console.error(error);
+
+      toaster.create({
+        title: "추가 실패",
+        description: "네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
+        type: "error",
+      });
+    } finally {
+      setLoading(false);
     }
-
-    // (2) demoKey 생성
-    const response = await fetch("/api/demo", {
-      method: "POST",
-    });
-
-    if (!response.ok) {
-      const text = await response.text();
-      console.error(text);
-      return;
-    }
-
-    const data = await response.json();
-    const demoKey = data.demoKey;
-
-    window.localStorage.setItem("demoKey", demoKey);
-
-    await ensureMinDelay(start);
-    return router.push(`/demo/${demoKey}/trips`);
   };
 
   return (

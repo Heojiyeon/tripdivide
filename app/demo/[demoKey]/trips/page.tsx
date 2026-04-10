@@ -1,5 +1,6 @@
 import { Skeleton, Stack } from "@chakra-ui/react";
 import { Suspense } from "react";
+
 import TripAddCard from "./_components/TripAddCard";
 import TripList from "./_components/TripList";
 

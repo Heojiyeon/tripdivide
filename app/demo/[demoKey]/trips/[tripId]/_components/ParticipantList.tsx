@@ -1,5 +1,6 @@
 "use client";
 
+import { toaster } from "@/components/ui/toaster";
 import { TripDetailResponse } from "@/types/api";
 import { useRouter } from "next/navigation";
 import { RefObject, useRef, useState } from "react";
@@ -29,14 +30,40 @@ export default function ParticipantList({
     try {
       const formData = new FormData(e.currentTarget);
 
-      await fetch(`/api/demo/${demoKey}/trips/${tripId}/participants`, {
+      const res = await fetch(`/api/demo/${demoKey}/trips/${tripId}/participants`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: formData.get("name") }),
       });
 
+      const result = await res.json().catch(() => null);
+
+      if (!res.ok) {
+        const message = result.message ?? "참여자 추가 중 오류가 발생했습니다.";
+
+        toaster.create({
+          title: "추가 실패",
+          description: message,
+          type: "error",
+        });
+      } else {
+        toaster.create({
+          title: "추가 성공",
+          description: "참여자가 추가되었습니다.",
+          type: "success",
+        });
+      }
+
       formRef.current?.reset();
       router.refresh();
+    } catch (error) {
+      console.error(error);
+
+      toaster.create({
+        title: "추가 실패",
+        description: "네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
+        type: "error",
+      });
     } finally {
       setLoading(false);
     }

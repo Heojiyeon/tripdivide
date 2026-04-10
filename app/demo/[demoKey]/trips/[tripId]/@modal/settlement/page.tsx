@@ -1,6 +1,7 @@
 import Modal from "@/components/ui/Modal";
 import { formatAmount } from "@/lib/format";
 import { ApiResponse, SettlementResponse } from "@/types/api";
+import { redirect } from "next/navigation";
 import TripSettlementShareButton from "../../_components/TripSettlementShareButton";
 
 export default async function Settlement({
@@ -12,12 +13,22 @@ export default async function Settlement({
 
   const res = await fetch(`${process.env.API_URL}/api/demo/${demoKey}/trips/${tripId}/settlement`);
 
-  if (!res.ok) {
-    console.error("지출 결과 조회 실패");
-    return;
+  if (res.status === 404) {
+    redirect(`/demo/${demoKey}/trips/${tripId}?notice=settlement-not-found`);
   }
 
-  const { data } = (await res.json()) as ApiResponse<SettlementResponse>;
+  const result = await res.json().catch(() => null);
+
+  if (!res.ok) {
+    return (
+      <Modal title="📃 정산 결과서">
+        <div className="flex flex-col gap-6 text-sm text-gray-600">
+          정산 결과를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.
+        </div>
+      </Modal>
+    );
+  }
+  const { data } = result as ApiResponse<SettlementResponse>;
   const { title, totalAmount, participants, transactions } = data;
 
   return (

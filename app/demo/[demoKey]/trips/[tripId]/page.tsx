@@ -1,13 +1,16 @@
-import ParticipantList from "@/app/demo/[demoKey]/trips/[tripId]/_components/ParticipantList";
-import TripSettlementButton from "@/app/demo/[demoKey]/trips/[tripId]/_components/TripSettlementButton";
-import TripStatusButton from "@/app/demo/[demoKey]/trips/[tripId]/_components/TripStatusButton";
 import { formatDate } from "@/lib/format";
 import { ApiResponse, TripDetailResponse } from "@/types/api";
+
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
+
 import TripStatusTag from "../_components/TripStatusTag";
 import ExpenseList from "./_components/ExpenseList";
-import { Suspense } from "react";
+import ParticipantList from "./_components/ParticipantList";
+import SettlementNoticeToast from "./_components/SettlementNoticeToast";
+import TripSettlementButton from "./_components/TripSettlementButton";
 import TripSkeleton from "./_components/TripSkeleton";
+import TripStatusButton from "./_components/TripStatusButton";
 
 /**
  *
@@ -15,15 +18,21 @@ import TripSkeleton from "./_components/TripSkeleton";
  */
 export default async function Page({
   params,
+  searchParams,
 }: {
   params: Promise<{ demoKey: string; tripId: string }>;
+  searchParams: Promise<{ notice?: string }>;
 }) {
   const { demoKey, tripId } = await params;
+  const { notice } = await searchParams;
 
   return (
-    <Suspense fallback={<TripSkeleton />}>
-      <TripDetails demoKey={demoKey} tripId={tripId} />
-    </Suspense>
+    <>
+      <SettlementNoticeToast notice={notice} demoKey={demoKey} tripId={tripId} />
+      <Suspense fallback={<TripSkeleton />}>
+        <TripDetails demoKey={demoKey} tripId={tripId} />
+      </Suspense>
+    </>
   );
 }
 
@@ -32,9 +41,13 @@ const TripDetails = async ({ demoKey, tripId }: { demoKey: string; tripId: strin
     cache: "no-store",
   });
 
-  if (!res.ok) return notFound();
+  if (res.status === 404) {
+    notFound();
+  }
 
-  const { data } = (await res.json()) as ApiResponse<TripDetailResponse>;
+  const result = await res.json().catch(() => null);
+
+  const { data } = result as ApiResponse<TripDetailResponse>;
   const { title, status, createdAt, participants, expenses } = data;
 
   return (
@@ -47,7 +60,6 @@ const TripDetails = async ({ demoKey, tripId }: { demoKey: string; tripId: strin
           </div>
           <span className="text-gray-400">{formatDate(createdAt, true)}</span>
         </div>
-
         <div className="flex flex-col sm:flex-row items-center gap-2">
           <TripStatusButton demoKey={demoKey} tripId={tripId} status={status} />
           <TripSettlementButton demoKey={demoKey} tripId={tripId} status={status} />

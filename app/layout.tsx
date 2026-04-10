@@ -4,6 +4,7 @@ import "./globals.css";
 
 import localFont from "next/font/local";
 import { HiCalculator } from "react-icons/hi";
+import { Toaster } from "@/components/ui/toaster";
 
 const pretendard = localFont({
   src: "./../public/fonts/PretendardVariable.woff2",
@@ -36,6 +37,7 @@ export default function RootLayout({
             </div>
           </header>
           <main className="max-w-5xl min-h-screen mx-auto">{children}</main>
+          <Toaster />
         </Provider>
       </body>
     </html>

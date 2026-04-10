@@ -1,9 +1,9 @@
 "use client";
 
+import { toaster } from "@/components/ui/toaster";
 import { TripDetailResponse } from "@/types/api";
-import { Alert } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useRef, useState } from "react";
 
 /**
  *
@@ -24,7 +24,6 @@ export default function ExpenseForm({
   const [amount, setAmount] = useState("");
   const [splitEqualMode, setSplitEqualMode] = useState(true);
   const [splits, setSplits] = useState<{ participantId: string; shareAmount: number }[]>([]);
-  const [alertMessage, setAlertMessage] = useState("");
 
   const [loading, setLoading] = useState(false);
 
@@ -145,33 +144,40 @@ export default function ExpenseForm({
       const result = await res.json().catch(() => null);
 
       if (!res.ok) {
-        const message = result?.message ?? "지출 금액과 분배 금액의 합이 일치하지 않습니다.";
-        setAlertMessage(message);
-        return;
+        const message = result?.message ?? "지출 추가 중 오류가 발생했습니다.";
+
+        toaster.create({
+          title: "추가 실패",
+          description: message,
+          type: "error",
+        });
+      } else {
+        toaster.create({
+          title: "추가 성공",
+          description: "지출이 추가되었습니다.",
+          type: "success",
+        });
+
+        formRef.current?.reset();
+
+        setAmount("");
+        setSplitEqualMode(true);
+        setSplits([]);
+
+        router.refresh();
       }
-
-      formRef.current?.reset();
-      setAmount("");
-      setSplitEqualMode(true);
-      setSplits([]);
-      setLoading(false);
-
-      router.refresh();
     } catch (error) {
       console.error(error);
-      setAlertMessage("네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+
+      toaster.create({
+        title: "추가 실패",
+        description: "네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
+        type: "error",
+      });
+    } finally {
+      setLoading(false);
     }
   };
-
-  useEffect(() => {
-    if (!alertMessage) return;
-
-    const timer = setTimeout(() => {
-      setAlertMessage("");
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, [alertMessage]);
 
   return (
     <>
@@ -300,14 +306,6 @@ export default function ExpenseForm({
           </button>
         </fieldset>
       </form>
-      {alertMessage && (
-        <div className="fixed bottom-10 left-1/2 z-50 w-[calc(100%-32px)] max-w-md -translate-x-1/2">
-          <Alert.Root status="info" title={alertMessage} bgColor="red.500" color="white">
-            <Alert.Indicator />
-            <Alert.Title>{alertMessage}</Alert.Title>
-          </Alert.Root>
-        </div>
-      )}
     </>
   );
 }

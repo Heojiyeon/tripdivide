@@ -1,23 +1,22 @@
 import { ErrorCode } from "@/types/api";
 
 export const ErrorMessage: Record<ErrorCode, string> = {
-  [ErrorCode.BAD_REQUEST]: "Invalid request",
-  [ErrorCode.TRIP_NOT_FOUND]: "Trip not found",
-  [ErrorCode.EXPENSE_NOT_FOUND]: "Expense not found",
-  [ErrorCode.PARTICIPANT_NOT_FOUND]: "Participant not found",
-  [ErrorCode.INVALID_SPLIT_SUM]: "Sum of split amounts must equal total amount",
-  [ErrorCode.TRIP_ALREADY_SETTLED]: "Trip is already settled",
-  [ErrorCode.SETTLEMENT_NOT_FOUND]: "Settlement not found",
-  [ErrorCode.INTERNAL_SERVER_ERROR]: "Internal server error",
+  [ErrorCode.BAD_REQUEST]: "잘못된 요청입니다.",
+  [ErrorCode.INVALID_ACCESS]: "유효하지 않은 접근입니다.",
+  [ErrorCode.TRIP_NOT_FOUND]: "여행을 찾을 수 없습니다.",
+  [ErrorCode.EXPENSE_NOT_FOUND]: "지출 내역을 찾을 수 없습니다.",
+  [ErrorCode.PARTICIPANT_NOT_FOUND]: "참여자를 찾을 수 없습니다.",
+  [ErrorCode.INVALID_SPLIT_SUM]: "분배 금액의 합이 총 지출 금액과 일치하지 않습니다.",
+  [ErrorCode.TRIP_ALREADY_SETTLED]: "이미 정산이 완료된 여행입니다.",
+  [ErrorCode.SETTLEMENT_NOT_FOUND]: "정산 결과를 찾을 수 없습니다.",
+  [ErrorCode.INTERNAL_SERVER_ERROR]: "서버 오류가 발생했습니다.",
 };
 
 export function apiError(code: ErrorCode, status: number) {
   return Response.json(
     {
-      error: {
-        code,
-        message: ErrorMessage[code],
-      },
+      code,
+      message: ErrorMessage[code],
     },
     { status },
   );

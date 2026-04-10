@@ -6,10 +6,9 @@ export default function NotFound() {
       <div className="w-full max-w-xl rounded-3xl border border-gray-200 bg-white px-8 py-12 text-center shadow-sm">
         <p className="text-sm font-semibold tracking-[0.2em] text-blue-500">404</p>
         <h1 className="mt-3 text-3xl font-bold text-gray-900">
-          요청하신 페이지가 존재하지 않아요.
+          요청하신 여행 목록을 찾을 수 없어요.
         </h1>
         <p className="mt-4 text-sm leading-6 text-gray-600">
-          <br />
           TripDivide 홈으로 돌아가 다시 시도해주세요.
         </p>
         <div className="mt-8 flex justify-center">

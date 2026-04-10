@@ -18,8 +18,17 @@ export async function POST(
 
   const { title, amount, paidById, splits } = await request.json();
 
-  if (typeof title !== "string" || typeof amount !== "number" || typeof paidById !== "string")
+  if (
+    typeof title !== "string" ||
+    !title.trim() ||
+    typeof amount !== "number" ||
+    !Number.isFinite(amount) ||
+    amount <= 0 ||
+    typeof paidById !== "string" ||
+    !paidById.trim()
+  ) {
     return apiError(ErrorCode.BAD_REQUEST, 400);
+  }
 
   if (!Array.isArray(splits) || splits.length === 0) return apiError(ErrorCode.BAD_REQUEST, 400);
 
@@ -27,7 +36,10 @@ export async function POST(
     if (
       !split ||
       typeof split.participantId !== "string" ||
-      typeof split.shareAmount !== "number"
+      !split.participantId.trim() ||
+      typeof split.shareAmount !== "number" ||
+      !Number.isFinite(split.shareAmount) ||
+      split.shareAmount < 0
     ) {
       return apiError(ErrorCode.BAD_REQUEST, 400);
     }
@@ -67,7 +79,7 @@ export async function POST(
   // 4. 정합성 체크
   const total = splits.reduce((sum, s) => sum + s.shareAmount, 0);
   if (total !== amount) {
-    return apiError(ErrorCode.BAD_REQUEST, 400);
+    return apiError(ErrorCode.INVALID_SPLIT_SUM, 400);
   }
 
   // 5. expense 값 생성

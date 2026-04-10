@@ -15,10 +15,24 @@ export default async function TripList({ demoKey }: { demoKey: string }) {
   const res = await fetch(`${process.env.API_URL}/api/demo/${demoKey}/trips`, {
     cache: "no-store",
   });
-  if (!res.ok) return notFound();
 
-  const json = await res.json();
-  const trips = json?.data ?? [];
+  const result = await res.json().catch(() => null);
+
+  if (res.status === 404) {
+    notFound();
+  }
+
+  if (!res.ok) {
+    return (
+      <div className="flex max-h-[600px] flex-col gap-2 overflow-auto">
+        <div className="rounded-2xl border border-red-100 bg-red-50 p-6 text-sm text-red-600">
+          {result?.message ?? "여행 리스트를 불러오지 못했습니다. 잠시 후 다시 시도해주세요."}
+        </div>
+      </div>
+    );
+  }
+
+  const trips = result?.data;
 
   return (
     <>

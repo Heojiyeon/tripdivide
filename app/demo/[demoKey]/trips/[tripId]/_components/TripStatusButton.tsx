@@ -1,5 +1,6 @@
 "use client";
 
+import { toaster } from "@/components/ui/toaster";
 import { TripDetailResponse } from "@/types/api";
 import { Button } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
@@ -22,20 +23,36 @@ export default function TripStatusButton({
     setLoading(true);
     const changeStatus = isOpen ? "SETTLED" : "OPEN";
 
-    const res = await fetch(`/api/demo/${demoKey}/trips/${tripId}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: changeStatus }),
-    });
+    try {
+      const res = await fetch(`/api/demo/${demoKey}/trips/${tripId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: changeStatus }),
+      });
+      const result = await res.json().catch(() => null);
 
-    if (!res.ok) {
-      console.error("지출 상세 조회 실패");
+      if (!res.ok) {
+        const message = result?.message ?? "정산 확정 중 오류가 발생했습니다.";
+
+        toaster.create({
+          title: "정산 실패",
+          description: message,
+          type: "error",
+        });
+      }
+
+      router.refresh();
+    } catch (error) {
+      console.error(error);
+
+      toaster.create({
+        title: "추가 실패",
+        description: "네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
+        type: "error",
+      });
+    } finally {
       setLoading(false);
-      return;
     }
-
-    setLoading(false);
-    router.refresh();
   };
 
   return (

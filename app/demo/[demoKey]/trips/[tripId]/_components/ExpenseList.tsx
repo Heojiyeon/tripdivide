@@ -6,6 +6,7 @@ import { useMemo, useState } from "react";
 import ExpenseCheck from "./ExpenseCheck";
 import ExpenseForm from "./ExpenseForm";
 import { HiOutlineCurrencyDollar } from "react-icons/hi";
+import { toaster } from "@/components/ui/toaster";
 
 /**
  *
@@ -58,16 +59,31 @@ export default function ExpenseList({
   const handleClickExpense = async (id: string) => {
     setCanEdit(false);
 
-    const res = await fetch(`/api/demo/${demoKey}/trips/${tripId}/expenses/${id}`);
+    try {
+      const res = await fetch(`/api/demo/${demoKey}/trips/${tripId}/expenses/${id}`);
+      const result = await res.json().catch(() => null);
 
-    if (!res.ok) {
-      console.error("지출 상세 조회 실패");
-      return;
+      if (!res.ok) {
+        const message = result.message ?? "여행 상세 조회 중 오류가 발생했습니다.";
+
+        toaster.create({
+          title: "조회 실패",
+          description: message,
+          type: "error",
+        });
+      }
+
+      const { data } = result as ApiResponse<ExpenseDetailResponse>;
+      setSelectedExpense(data);
+    } catch (error) {
+      console.error(error);
+
+      toaster.create({
+        title: "조회 실패",
+        description: "네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
+        type: "error",
+      });
     }
-
-    const { data } = (await res.json()) as ApiResponse<ExpenseDetailResponse>;
-
-    setSelectedExpense(data);
   };
 
   return (
