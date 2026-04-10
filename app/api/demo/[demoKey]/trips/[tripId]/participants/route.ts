@@ -43,16 +43,17 @@ export async function POST(
 
   if (typeof name !== "string" || !name.trim()) return apiError(ErrorCode.BAD_REQUEST, 400);
 
-  //  SETTLED 상태인 경우 체크
+  // 1. trip 존재 검증 및 SETTLED 상태인 경우 체크
   const currentTrip = await prisma.trip.findFirst({
     where: {
       demoKey,
       id: tripId,
     },
   });
+  if (!currentTrip) return apiError(ErrorCode.TRIP_NOT_FOUND, 404);
+  if (currentTrip.status === "SETTLED") return apiError(ErrorCode.TRIP_ALREADY_SETTLED, 409);
 
-  if (currentTrip?.status === "SETTLED") return apiError(ErrorCode.TRIP_ALREADY_SETTLED, 409);
-
+  // 3. 참여자 생성
   const res = await prisma.participant.create({
     data: {
       tripId,

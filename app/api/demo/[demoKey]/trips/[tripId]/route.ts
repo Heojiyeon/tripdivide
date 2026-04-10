@@ -49,6 +49,9 @@ export async function GET(
  * tripId 파라미터
  * return Trip 상세 정보
  */
+
+const VALID_STATUS = ["OPEN", "SETTLED"] as const;
+
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ demoKey: string; tripId: string }> },
@@ -56,9 +59,18 @@ export async function PATCH(
   const { demoKey, tripId } = await params;
   if (!demoKey || !tripId) return apiError(ErrorCode.BAD_REQUEST, 400);
 
-  const { status } = await request.json();
+  // 1. trip 존재 검증
+  const validTrip = await prisma.trip.findFirst({
+    where: {
+      demoKey,
+      id: tripId,
+    },
+  });
 
-  const VALID_STATUS = ["OPEN", "SETTLED"];
+  if (!validTrip) return apiError(ErrorCode.TRIP_NOT_FOUND, 404);
+
+  // 2. 상태 검증
+  const { status } = await request.json();
 
   if (!status || !VALID_STATUS.includes(status)) {
     return apiError(ErrorCode.BAD_REQUEST, 400);
@@ -67,7 +79,6 @@ export async function PATCH(
   const res = await prisma.trip.update({
     where: {
       id: tripId,
-      demoKey,
     },
     data: {
       status,
