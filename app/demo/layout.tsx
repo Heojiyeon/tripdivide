@@ -6,11 +6,11 @@ export default function Layout({
   children: React.ReactNode;
 }>) {
   return (
-    <>
-      <div className="w-full justify-start m-4">
+    <div className="min-h-screen">
+      <div className="w-fit m-4 justify-start">
         <BackButton fallbackHref="/" />
       </div>
-      <div className="flex flex-col min-h-screen gap-8 m-8">{children}</div>
-    </>
+      <div className="flex flex-col mx-8 gap-8">{children}</div>
+    </div>
   );
 }
