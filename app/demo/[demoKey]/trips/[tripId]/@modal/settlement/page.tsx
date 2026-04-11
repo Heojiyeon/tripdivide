@@ -32,7 +32,7 @@ export default async function Settlement({
   const { title, totalAmount, participants, transactions } = data;
 
   return (
-    <Modal title="📃 정산 결과서" closeHref="/">
+    <Modal title="📃 정산 결과서">
       <div className="flex flex-col gap-6">
         <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5">
           <div className="mb-3 flex items-center justify-between">

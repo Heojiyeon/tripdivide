@@ -5,6 +5,7 @@ import "./globals.css";
 import localFont from "next/font/local";
 import { HiCalculator } from "react-icons/hi";
 import { Toaster } from "@/components/ui/toaster";
+import Link from "next/link";
 
 const pretendard = localFont({
   src: "./../public/fonts/PretendardVariable.woff2",
@@ -44,15 +45,15 @@ export default function RootLayout({
     <html lang="ko">
       <body className={`${pretendard.className} antialiased`}>
         <Provider>
-          <header>
+          <header className="sticky top-0 z-50 bg-white">
             <div className="border-b border-gray-300 mx-auto flex h-16 max-w-5xl items-center justify-between px-4">
-              <div className="flex items-center gap-2">
+              <Link href="/" className="flex items-center gap-2">
                 <HiCalculator className="text-xl text-blue-400" />
                 <span className="text-xl font-bold">TripDivide</span>
-              </div>
+              </Link>
             </div>
           </header>
-          <main className="max-w-5xl min-h-screen mx-auto">{children}</main>
+          <main className="max-w-5xl min-h-screen mx-auto bg-white">{children}</main>
           <Toaster />
         </Provider>
       </body>

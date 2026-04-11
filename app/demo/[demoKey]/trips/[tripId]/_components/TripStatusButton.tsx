@@ -64,7 +64,6 @@ export default function TripStatusButton({
         bgColor={isOpen ? "green.100" : "blue.100"}
         rounded={"xl"}
         loading={loading}
-        loadingText="loading..."
       >
         {isOpen ? "정산 확정" : "정산 수정"}
       </Button>

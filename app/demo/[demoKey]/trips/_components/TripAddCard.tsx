@@ -1,7 +1,7 @@
 "use client";
 
 import { toaster } from "@/components/ui/toaster";
-import { Button } from "@chakra-ui/react";
+import { Button, useBreakpointValue } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 
@@ -15,6 +15,11 @@ export default function TripAddCard({ demoKey }: { demoKey: string }) {
   const formRef = useRef<HTMLFormElement>(null);
 
   const [loading, setLoading] = useState(false);
+
+  const placeholder = useBreakpointValue({
+    sm: "새 여행을 입력하세요",
+    base: "새 여행 입력",
+  });
 
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -60,7 +65,7 @@ export default function TripAddCard({ demoKey }: { demoKey: string }) {
         <input
           type="text"
           name="title"
-          placeholder="새 여행 이름을 입력하세요"
+          placeholder={placeholder}
           required
           className="w-full flex-1 bg-white py-3 h-11 px-5 rounded-lg"
         />
