@@ -42,7 +42,7 @@ const TripDetails = async ({ demoKey, tripId }: { demoKey: string; tripId: strin
   });
 
   if (res.status === 404) {
-    notFound();
+    return notFound();
   }
 
   const result = await res.json().catch(() => null);

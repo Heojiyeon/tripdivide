@@ -71,6 +71,8 @@ export default function ExpenseList({
           description: message,
           type: "error",
         });
+
+        return;
       }
 
       const { data } = result as ApiResponse<ExpenseDetailResponse>;
@@ -83,6 +85,8 @@ export default function ExpenseList({
         description: "네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
         type: "error",
       });
+
+      return;
     }
   };
 

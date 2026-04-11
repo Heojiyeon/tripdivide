@@ -39,6 +39,8 @@ export default function TripStatusButton({
           description: message,
           type: "error",
         });
+
+        return;
       }
 
       router.refresh();

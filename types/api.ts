@@ -3,10 +3,8 @@ export type ApiResponse<T> = {
 };
 
 export type ApiErrorResponse = {
-  error: {
-    code: string;
-    message: string;
-  };
+  code: string;
+  message: string;
 };
 
 export enum ErrorCode {
