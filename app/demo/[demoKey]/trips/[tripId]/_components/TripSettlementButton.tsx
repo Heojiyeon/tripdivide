@@ -20,7 +20,7 @@ export default function TripSettlementButton({
 
   const handleClick = () => {
     startTransition(() => {
-      router.push(`/demo/${demoKey}/trips/${tripId}/settlement`);
+      router.push(`/demo/${demoKey}/trips/${tripId}/settlement?from=trip`);
     });
   };
 
