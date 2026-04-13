@@ -34,7 +34,25 @@ export default function Home() {
 
       if (existedDemoKey) {
         await ensureMinDelay(start);
-        return router.push(`/demo/${existedDemoKey}/trips`);
+
+        const checkDemoKey = await fetch(`/api/demo/${existedDemoKey}/trips`);
+
+        if (checkDemoKey.ok) {
+          await ensureMinDelay(start);
+          return router.push(`/demo/${existedDemoKey}/trips`);
+        }
+
+        if (checkDemoKey.status === 404) {
+          window.localStorage.removeItem("demoKey");
+
+          toaster.create({
+            title: "데모 정보 복구",
+            description: "저장된 데모 정보가 만료되어 새로 시작합니다.",
+            type: "info",
+          });
+
+          return router.push(`/demo/${existedDemoKey}/trips`);
+        }
       }
 
       // (2) demoKey 생성
