@@ -1,6 +1,7 @@
 import { Skeleton, Stack } from "@chakra-ui/react";
 import { Suspense } from "react";
 
+import BackButton from "../../_components/BackButton";
 import TripAddCard from "./_components/TripAddCard";
 import TripList from "./_components/TripList";
 
@@ -13,6 +14,9 @@ export default async function Trips({ params }: { params: Promise<{ demoKey: str
 
   return (
     <>
+      <div className="w-fit">
+        <BackButton fallbackHref="/" />
+      </div>
       <div>
         <p className="font-semibold text-3xl">내 여행</p>
         <p className="text-gray-500">여행을 추가하고 지출을 관리하세요.</p>

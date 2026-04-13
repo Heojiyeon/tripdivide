@@ -19,7 +19,7 @@ export default function BackButton({ fallbackHref }: { fallbackHref?: string }) 
   };
 
   return (
-    <Button onClick={handleBack} aria-label="뒤로가기">
+    <Button p={0} mt={3} onClick={handleBack} aria-label="뒤로가기">
       <HiArrowLeft />
     </Button>
   );

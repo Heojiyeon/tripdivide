@@ -4,6 +4,7 @@ import { ApiResponse, TripDetailResponse } from "@/types/api";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
+import BackButton from "../../../_components/BackButton";
 import TripStatusTag from "../_components/TripStatusTag";
 import ExpenseList from "./_components/ExpenseList";
 import ParticipantList from "./_components/ParticipantList";
@@ -29,6 +30,9 @@ export default async function Page({
   return (
     <>
       <SettlementNoticeToast notice={notice} demoKey={demoKey} tripId={tripId} />
+      <div className="w-fit">
+        <BackButton fallbackHref={`/demo/${demoKey}/trips`} />
+      </div>
       <Suspense fallback={<TripSkeleton />}>
         <TripDetails demoKey={demoKey} tripId={tripId} />
       </Suspense>

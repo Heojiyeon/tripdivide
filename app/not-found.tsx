@@ -2,11 +2,13 @@ import Link from "next/link";
 
 export default function NotFound() {
   return (
-    <div className="flex min-h-[calc(100vh-64px)] items-center justify-center px-6">
+    <div className="flex min-h-[calc(100vh-64px)] items-center justify-center">
       <div className="w-full max-w-xl rounded-3xl border border-gray-200 bg-white px-8 py-12 text-center shadow-sm">
         <p className="text-sm font-semibold tracking-[0.2em] text-blue-500">404</p>
         <h1 className="mt-3 text-3xl font-bold text-gray-900">
-          요청하신 페이지가 존재하지 않아요.
+          요청하신 페이지가
+          <br />
+          존재하지 않아요.
         </h1>
         <p className="mt-4 text-sm leading-6 text-gray-600">
           <br />

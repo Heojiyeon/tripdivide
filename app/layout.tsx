@@ -53,7 +53,7 @@ export default function RootLayout({
               </Link>
             </div>
           </header>
-          <main className="max-w-5xl min-h-screen mx-auto bg-white">{children}</main>
+          <main className="mx-auto min-h-[calc(100dvh-64px)] max-w-5xl bg-white">{children}</main>
           <Toaster />
         </Provider>
       </body>
