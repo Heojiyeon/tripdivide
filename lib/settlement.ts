@@ -64,7 +64,8 @@ export function calculateSettlement({
     let remaining = Math.abs(debtor.balance);
 
     for (const creditor of creditors) {
-      if (remaining === 0 || creditor.balance === 0) break;
+      if (remaining === 0) break;
+      if (creditor.balance === 0) continue;
 
       const amount = Math.min(remaining, creditor.balance);
       transactions.push({ from: debtor.name, to: creditor.name, amount });
