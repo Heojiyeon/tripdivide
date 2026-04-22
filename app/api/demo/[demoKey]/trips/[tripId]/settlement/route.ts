@@ -40,7 +40,7 @@ export async function GET(
     },
   });
 
-  if (!res) return apiError(ErrorCode.SETTLEMENT_NOT_FOUND, 404);
+  if (!res || res.status === "OPEN") return apiError(ErrorCode.SETTLEMENT_NOT_FOUND, 404);
 
   const { totalAmount, transactions } = calculateSettlement({
     participants: res.participants,

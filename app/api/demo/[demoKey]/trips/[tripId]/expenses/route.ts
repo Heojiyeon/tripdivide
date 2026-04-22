@@ -24,6 +24,7 @@ export async function POST(
     typeof amount !== "number" ||
     !Number.isFinite(amount) ||
     amount <= 0 ||
+    !Number.isInteger(amount) ||
     typeof paidById !== "string" ||
     !paidById.trim()
   ) {
@@ -39,7 +40,8 @@ export async function POST(
       !split.participantId.trim() ||
       typeof split.shareAmount !== "number" ||
       !Number.isFinite(split.shareAmount) ||
-      split.shareAmount < 0
+      split.shareAmount <= 0 ||
+      !Number.isInteger(split.shareAmount)
     ) {
       return apiError(ErrorCode.BAD_REQUEST, 400);
     }
@@ -58,6 +60,9 @@ export async function POST(
 
   // 2. 정산 참여자 검증
   const participantIds = [...new Set(splits.map((split) => split.participantId))];
+
+  if (participantIds.length !== splits.length) return apiError(ErrorCode.BAD_REQUEST, 400);
+
   const validParticipants = await prisma.participant.findMany({
     where: {
       tripId,

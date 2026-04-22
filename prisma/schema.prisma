@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"                  
+  provider = "postgresql"
 }
 
 enum TripStatus {
@@ -23,7 +23,7 @@ model DemoSession {
 
 model Trip {
   id        String     @id @default(cuid())
-  demoKey String
+  demoKey   String
   title     String
   status    TripStatus @default(OPEN)
   createdAt DateTime   @default(now())
@@ -37,19 +37,21 @@ model Trip {
 }
 
 model Participant {
-  id        String   @id @default(cuid())
-  name      String
+  id   String @id @default(cuid())
+  name String
 
   tripId String
   trip   Trip   @relation(fields: [tripId], references: [id], onDelete: Cascade)
 
   expensesPaid Expense[]      @relation("PaidBy")
   splits       ExpenseSplit[]
+
+  @@unique([name, tripId])
 }
 
 model Expense {
   id        String   @id @default(cuid())
-  title String
+  title     String
   amount    Int
   createdAt DateTime @default(now())
 

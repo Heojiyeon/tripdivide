@@ -20,6 +20,7 @@ export default function ExpenseForm({
 }) {
   const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
+  const submitLockRef = useRef(false);
 
   const [amount, setAmount] = useState("");
   const [splitEqualMode, setSplitEqualMode] = useState(true);
@@ -123,6 +124,10 @@ export default function ExpenseForm({
   /** 정산 추가 제출 함수 */
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // 요청 중복 방지 (이미 요청 진행중인 경우 리턴)
+    if (submitLockRef.current) return;
+    submitLockRef.current = true;
     setLoading(true);
 
     try {
@@ -175,6 +180,7 @@ export default function ExpenseForm({
         type: "error",
       });
     } finally {
+      submitLockRef.current = false;
       setLoading(false);
     }
   };

@@ -54,11 +54,22 @@ export async function POST(
   if (!currentTrip) return apiError(ErrorCode.TRIP_NOT_FOUND, 404);
   if (currentTrip.status === "SETTLED") return apiError(ErrorCode.TRIP_ALREADY_SETTLED, 409);
 
+  // 2. 참여자 중복 확인
+  const isAlreadyExistedParticipant = await prisma.participant.findUnique({
+    where: {
+      name_tripId: {
+        tripId,
+        name: name.trim(),
+      },
+    },
+  });
+  if (isAlreadyExistedParticipant) return apiError(ErrorCode.PARTICIPANT_ALREADY_EXISTED, 409);
+
   // 3. 참여자 생성
   const res = await prisma.participant.create({
     data: {
       tripId,
-      name,
+      name: name.trim(),
     },
   });
 
