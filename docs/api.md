@@ -253,12 +253,13 @@ Validation rules
 
 ## `PATCH /demo/:demoKey/trips/:tripId`
 
-Used to update trip status (e.g. OPEN -> SETTLED)
+Used to update trip status (e.g. OPEN -> SETTLED) and title
 
 ### Request
 
 ```json
 {
+  "title": "스위스 여행",
   "status": "SETTLED"
 }
 ```
@@ -268,25 +269,94 @@ Used to update trip status (e.g. OPEN -> SETTLED)
 ```json
 {
   "id": "sdasd1",
-  "title": "유럽 여행",
+  "title": "스위스 여행",
   "status": "SETTLED",
   "updatedAt": "2026-03-06T14:00:00Z"
 }
 ```
+
+## `PATCH /demo/:demoKey/trips/:tripId/expenses/:expenseId`
+
+Validation rules
+
+- sum(splits[].shareAmount) must equal amount
+
+- paidById and all splits[].participantId must belong to the trip
+
+- settled trip cannot be modified
+
+### Request
+
+```json
+{
+  "title": "스위스 렌트비",
+  "amount": 120000,
+  "paidById": "hgrg55",
+  "splits": [
+    {
+      "participantId": "hgrg55",
+      "shareAmount": 70000
+    },
+    {
+      "participantId": "ngthn",
+      "shareAmount": 50000
+    }
+  ]
+}
+```
+
+### Response
+
+```json
+{
+  "id": "giun",
+  "title": "스위스 렌트비",
+  "amount": 120000,
+  "paidBy": {
+    "id": "hgrg55",
+    "name": "지연"
+  },
+  "splits": [
+    {
+      "id": "hgrg55",
+      "name": "지연",
+      "shareAmount": 70000
+    },
+    {
+      "id": "ngthn",
+      "name": "승우",
+      "shareAmount": 50000
+    }
+  ],
+  "createdAt": "2026-03-06T12:00:00Z"
+}
+```
+
+## `DELETE /demo/:demoKey/trips/:tripId`
+
+### Response - 204 No Content
+
+## `DELETE /demo/:demoKey/trips/:tripId/participants/:participantId`
+
+기존에 지출에 추가된 참여자는 삭제 불가 (409)
+
+### Response - 204 No Content
+
+## `DELETE /demo/:demoKey/trips/:tripId/expenses/:expenseId`
+
+### Response - 204 No Content
 
 ## Error Response Format
 
 ### Possible Errors
 
 - 400 INVALID_SPLIT_SUM
-- 404 TRIP_NOT_FOUND
-- 409 TRIP_ALREADY_SETTLED
+- 404 TRIP_NOT_FOUND / PARTICIPANT_NOT_FOUND
+- 409 TRIP_ALREADY_SETTLED / PARTICIPANT_HAS_EXPENSE_HISTORY
 
 ```json
 {
-  "error": {
-    "code": "INVALID_SPLIT_SUM",
-    "message": "Sum of split amounts must equal the total expense amount"
-  }
+  "code": "INVALID_SPLIT_SUM",
+  "message": "Sum of split amounts must equal the total expense amount"
 }
 ```
