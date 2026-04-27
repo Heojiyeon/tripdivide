@@ -98,3 +98,31 @@ export async function PATCH(
 
   return NextResponse.json({ data: res }, { status: 200 });
 }
+
+/**
+ * DELETE /demo/:demoKey/trips/:tripId (여행 삭제)
+ */
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ demoKey: string; tripId: string }> },
+) {
+  const { demoKey, tripId } = await params;
+  if (!demoKey || !tripId) return apiError(ErrorCode.BAD_REQUEST, 400);
+
+  const isExistedTrip = await prisma.trip.findFirst({
+    where: {
+      demoKey,
+      id: tripId,
+    },
+  });
+
+  if (!isExistedTrip) return apiError(ErrorCode.TRIP_NOT_FOUND, 404);
+
+  await prisma.trip.delete({
+    where: {
+      id: tripId,
+    },
+  });
+
+  return new Response(null, { status: 204 });
+}

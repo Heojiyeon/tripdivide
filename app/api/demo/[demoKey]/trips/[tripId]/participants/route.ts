@@ -76,3 +76,61 @@ export async function POST(
   revalidatePath(`/demo/${demoKey}/trips/${tripId}`);
   return Response.json({ data: res }, { status: 201 });
 }
+
+/**
+ * DELETE /demo/:demoKey/trips/:trip/participants/:participantId (참여자 삭제)
+ */
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ demoKey: string; tripId: string; participantId: string }> },
+) {
+  // 1. 참여자 유효성 체크
+  const { demoKey, tripId, participantId } = await params;
+
+  if (!demoKey || !tripId || !participantId) {
+    return apiError(ErrorCode.BAD_REQUEST, 400);
+  }
+
+  const existingParticipant = await prisma.participant.findFirst({
+    where: {
+      id: participantId,
+      tripId,
+    },
+  });
+
+  if (!existingParticipant) return apiError(ErrorCode.PARTICIPANT_NOT_FOUND, 404);
+
+  // 2. 정산 참여자로 등록 되어 있는지 체크
+  const linkedExpense = await prisma.expense.findFirst({
+    where: {
+      tripId,
+      trip: {
+        demoKey,
+      },
+      OR: [
+        { paidById: participantId },
+        {
+          splits: {
+            some: {
+              participantId,
+            },
+          },
+        },
+      ],
+    },
+    select: { id: true },
+  });
+
+  if (linkedExpense) return apiError(ErrorCode.PARTICIPANT_HAS_EXPENSE_HISTORY, 409);
+
+  await prisma.participant.delete({
+    where: {
+      id: participantId,
+      tripId,
+      trip: {
+        demoKey,
+      },
+    },
+  });
+  return new Response(null, { status: 204 });
+}
