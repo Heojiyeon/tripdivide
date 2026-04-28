@@ -12,6 +12,7 @@ import SettlementNoticeToast from "./_components/SettlementNoticeToast";
 import TripSettlementButton from "./_components/TripSettlementButton";
 import TripSkeleton from "./_components/TripSkeleton";
 import TripStatusButton from "./_components/TripStatusButton";
+import TripDeleteButton from "./_components/TripDeleteButton";
 
 /**
  *
@@ -65,6 +66,7 @@ const TripDetails = async ({ demoKey, tripId }: { demoKey: string; tripId: strin
           <span className="text-gray-400">{formatDate(createdAt, true)}</span>
         </div>
         <div className="flex flex-col sm:flex-row items-center gap-2">
+          <TripDeleteButton demoKey={demoKey} tripId={tripId} />
           <TripStatusButton demoKey={demoKey} tripId={tripId} status={status} />
           <TripSettlementButton demoKey={demoKey} tripId={tripId} status={status} />
         </div>

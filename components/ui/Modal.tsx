@@ -9,14 +9,21 @@ export default function Modal({
   title,
   children,
   closeHref,
+  onClose,
 }: {
   title: string;
   children: ReactNode;
   closeHref?: string;
+  onClose?: () => void;
 }) {
   const router = useRouter();
 
   const handleClose = () => {
+    if (onClose) {
+      onClose();
+      return;
+    }
+
     if (closeHref) {
       window.location.replace(closeHref);
       return;

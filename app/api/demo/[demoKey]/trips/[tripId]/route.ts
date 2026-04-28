@@ -1,6 +1,7 @@
 import { apiError } from "@/lib/api-error";
 import { prisma } from "@/lib/prisma";
 import { ErrorCode } from "@/types/api";
+import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 
 /**
@@ -124,5 +125,6 @@ export async function DELETE(
     },
   });
 
+  revalidatePath(`/demo/${demoKey}/trips`);
   return new Response(null, { status: 204 });
 }
