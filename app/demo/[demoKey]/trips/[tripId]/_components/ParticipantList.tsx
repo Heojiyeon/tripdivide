@@ -4,7 +4,7 @@ import { toaster } from "@/components/ui/toaster";
 import { TripDetailResponse } from "@/types/api";
 import { useRouter } from "next/navigation";
 import { RefObject, useRef, useState } from "react";
-import { HiUsers } from "react-icons/hi";
+import { HiUsers, HiX } from "react-icons/hi";
 
 export default function ParticipantList({
   demoKey,
@@ -22,6 +22,45 @@ export default function ParticipantList({
   const [loading, setLoading] = useState(false);
 
   const canAddParticipant = status === "OPEN";
+
+  const handleDeleteParticipant = async (id: string) => {
+    try {
+      const res = await fetch(`/api/demo/${demoKey}/trips/${tripId}/participants/${id}`, {
+        method: "DELETE",
+      });
+      const result = await res.json().catch(() => null);
+
+      if (!res.ok) {
+        const message = result.message ?? "참여자 삭제 중 오류가 발생했습니다.";
+
+        toaster.create({
+          title: "삭제 실패",
+          description: message,
+          type: "error",
+        });
+
+        return;
+      }
+
+      toaster.create({
+        title: "지출 삭제 성공",
+        description: "정상 처리 되었습니다.",
+        type: "success",
+      });
+
+      router.refresh();
+    } catch (error) {
+      console.error(error);
+
+      toaster.create({
+        title: "삭제 실패 실패",
+        description: "네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
+        type: "error",
+      });
+
+      return;
+    }
+  };
 
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -87,6 +126,14 @@ export default function ParticipantList({
                     className="rounded-full bg-gray-100 px-3 py-1 text-sm font-semibold text-gray-800"
                   >
                     {participant.name}
+                    {canAddParticipant && (
+                      <button
+                        className="ml-1"
+                        onClick={() => handleDeleteParticipant(participant.id)}
+                      >
+                        <HiX />
+                      </button>
+                    )}
                   </span>
                 ))}
               </div>
