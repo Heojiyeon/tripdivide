@@ -90,6 +90,8 @@ export default function ExpenseList({
     }
   };
 
+  const resetSelectedExpense = () => setSelectedExpense(null);
+
   return (
     <div className="w-full overflow-x-hidden rounded-2xl border border-gray-200 bg-white px-5 py-5">
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_420px]">
@@ -134,12 +136,17 @@ export default function ExpenseList({
                   : "지출 정보"}
             </h3>
           </div>
-
           <div className="min-w-0 rounded-2xl bg-white p-4">
             {canEdit && canAddExpense ? (
               <ExpenseForm demoKey={demoKey} tripId={tripId} participants={participants} />
             ) : selectedExpense ? (
-              <ExpenseCheck selectedExpense={selectedExpense} />
+              <ExpenseCheck
+                demoKey={demoKey}
+                tripId={tripId}
+                resetSelectedExpense={resetSelectedExpense}
+                selectedExpense={selectedExpense}
+                canAddExpense={canAddExpense}
+              />
             ) : (
               <div className="flex min-h-[260px] items-center justify-center text-center text-sm text-gray-400">
                 확인할 지출을 선택해 주세요.
