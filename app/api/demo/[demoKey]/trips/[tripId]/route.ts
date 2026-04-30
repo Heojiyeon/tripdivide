@@ -82,7 +82,7 @@ export async function PATCH(
   if (validTrip.expenses.length === 0) return apiError(ErrorCode.EXPENSE_NOT_FOUND, 400);
 
   // 3. 상태 검증
-  const { status } = await request.json();
+  const { status, title } = await request.json();
 
   if (!status || !VALID_STATUS.includes(status)) {
     return apiError(ErrorCode.BAD_REQUEST, 400);
@@ -94,6 +94,7 @@ export async function PATCH(
     },
     data: {
       status,
+      title,
     },
   });
 

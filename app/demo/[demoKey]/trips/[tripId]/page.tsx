@@ -1,18 +1,11 @@
-import { formatDate } from "@/lib/format";
-import { ApiResponse, TripDetailResponse } from "@/types/api";
-
-import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
+import { ApiResponse, TripDetailResponse } from "@/types/api";
+import { notFound } from "next/navigation";
 import BackButton from "../../../_components/BackButton";
-import TripStatusTag from "../_components/TripStatusTag";
-import ExpenseList from "./_components/ExpenseList";
-import ParticipantList from "./_components/ParticipantList";
 import SettlementNoticeToast from "./_components/SettlementNoticeToast";
-import TripSettlementButton from "./_components/TripSettlementButton";
+import TripDetails from "./_components/TripDetails";
 import TripSkeleton from "./_components/TripSkeleton";
-import TripStatusButton from "./_components/TripStatusButton";
-import TripDeleteButton from "./_components/TripDeleteButton";
 
 /**
  *
@@ -28,20 +21,6 @@ export default async function Page({
   const { demoKey, tripId } = await params;
   const { notice } = await searchParams;
 
-  return (
-    <>
-      <SettlementNoticeToast notice={notice} demoKey={demoKey} tripId={tripId} />
-      <div className="w-fit">
-        <BackButton fallbackHref={`/demo/${demoKey}/trips`} />
-      </div>
-      <Suspense fallback={<TripSkeleton />}>
-        <TripDetails demoKey={demoKey} tripId={tripId} />
-      </Suspense>
-    </>
-  );
-}
-
-const TripDetails = async ({ demoKey, tripId }: { demoKey: string; tripId: string }) => {
   const res = await fetch(`${process.env.API_URL}/api/demo/${demoKey}/trips/${tripId}`, {
     cache: "no-store",
   });
@@ -53,37 +32,16 @@ const TripDetails = async ({ demoKey, tripId }: { demoKey: string; tripId: strin
   const result = await res.json().catch(() => null);
 
   const { data } = result as ApiResponse<TripDetailResponse>;
-  const { title, status, createdAt, participants, expenses } = data;
 
   return (
-    <div className="min-h-screen flex flex-col gap-8">
-      <div className="w-full flex justify-between">
-        <div className="flex flex-col items-start">
-          <div className="flex items-center gap-2">
-            <span className="text-2xl font-semibold">{title}</span>
-            <TripStatusTag status={status} />
-          </div>
-          <span className="text-gray-400">{formatDate(createdAt, true)}</span>
-        </div>
-        <div className="flex flex-col sm:flex-row items-center gap-2">
-          <TripDeleteButton demoKey={demoKey} tripId={tripId} />
-          <TripStatusButton demoKey={demoKey} tripId={tripId} status={status} />
-          <TripSettlementButton demoKey={demoKey} tripId={tripId} status={status} />
-        </div>
+    <>
+      <SettlementNoticeToast notice={notice} demoKey={demoKey} tripId={tripId} />
+      <div className="w-fit">
+        <BackButton fallbackHref={`/demo/${demoKey}/trips`} />
       </div>
-      <ParticipantList
-        demoKey={demoKey}
-        tripId={tripId}
-        participants={participants}
-        status={status}
-      />
-      <ExpenseList
-        demoKey={demoKey}
-        tripId={tripId}
-        expenses={expenses}
-        participants={participants}
-        status={status}
-      />
-    </div>
+      <Suspense fallback={<TripSkeleton />}>
+        <TripDetails demoKey={demoKey} tripId={tripId} tripData={data} />
+      </Suspense>
+    </>
   );
-};
+}
